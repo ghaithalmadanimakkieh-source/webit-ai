@@ -48,9 +48,9 @@ const INDUSTRIES = [
   {icon:"🏋️",name:"Fitness",desc:"Gym / Studio",color:"#ef4444",href:"/demo/fitness"},
   {icon:"🍝",name:"Restaurant",desc:"Food & Bar",color:"#d4af37",href:"/demo/restaurant"},
   {icon:"✂️",name:"Friseur",desc:"Hair Salon",color:"#8b5cf6",href:"/demo/friseur"},
-  {icon:"🏥",name:"Arztpraxis",desc:"Healthcare",color:"#06b6d4",href:"#"},
-  {icon:"🏠",name:"Immobilien",desc:"Real Estate",color:"#10b981",href:"#"},
-  {icon:"⚖️",name:"Kanzlei",desc:"Legal & Law",color:"#f97316",href:"#"},
+  {icon:"🏥",name:"Arztpraxis",desc:"Healthcare",color:"#06b6d4",href:"/demo/arztpraxis"},
+  {icon:"🏠",name:"Immobilien",desc:"Real Estate",color:"#10b981",href:"/demo/immobilien"},
+  {icon:"⚖️",name:"Kanzlei",desc:"Legal & Law",color:"#f97316",href:"/demo/kanzlei"},
   {icon:"🛒",name:"Online Shop",desc:"E-Commerce",color:"#ec4899",href:"#"},
   {icon:"🎓",name:"Bildung",desc:"Schule / Kurs",color:"#a78bfa",href:"#"},
 ];
@@ -101,7 +101,7 @@ function WLogo({size=32}:{size?:number}) {
 }
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const [chatOpen, setChatOpen] = useState(false);
   const [chatBounce, setChatBounce] = useState(false);
