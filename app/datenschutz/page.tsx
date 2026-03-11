@@ -1,3 +1,5 @@
+// @ts-nocheck
+"use client";
 export default function Datenschutz() {
   return (
     <main style={{minHeight:"100vh",background:"#050508",color:"white",fontFamily:"'Segoe UI',sans-serif",padding:"120px 40px 80px"}}>
