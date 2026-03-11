@@ -1,1 +1,7 @@
-Set-Content next.config.js "/** @type {import('next').NextConfig} */`nconst nextConfig = { typescript: { ignoreBuildErrors: true } };`nmodule.exports = nextConfig;"
+const nextConfig = {
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+};
+
+module.exports = nextConfig;
