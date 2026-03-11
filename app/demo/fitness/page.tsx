@@ -1,129 +1,115 @@
+// @ts-nocheck
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+const KURSE=[
+  {name:"HIIT Inferno",time:"06:00 & 18:00",level:"Intensiv",color:"#ef4444",spots:3},
+  {name:"Yoga Flow",time:"08:00 & 20:00",level:"Alle Level",color:"#8b5cf6",spots:8},
+  {name:"Powerlifting",time:"07:00 & 17:00",level:"Fortgeschr.",color:"#f59e0b",spots:5},
+  {name:"Cardio Blast",time:"09:00 & 19:00",level:"Mittel",color:"#10b981",spots:12},
+  {name:"Body Pump",time:"10:00 & 18:30",level:"Alle Level",color:"#06b6d4",spots:6},
+  {name:"Stretching",time:"07:30 & 21:00",level:"Einsteiger",color:"#ec4899",spots:15},
+];
 
 export default function FitnessDemo() {
-  const [loaded, setLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState("kurse");
-  const [count, setCount] = useState({members: 0, trainers: 0, years: 0});
-
-  useEffect(() => {
-    setTimeout(() => setLoaded(true), 100);
-    const timer = setTimeout(() => {
-      let m = 0, t = 0, y = 0;
-      const interval = setInterval(() => {
-        if (m < 1240) { m += 17; setCount(c => ({...c, members: m})); }
-        if (t < 24) { t += 1; setCount(c => ({...c, trainers: t})); }
-        if (y < 8) { y += 1; setCount(c => ({...c, years: y})); }
-        if (m >= 1240 && t >= 24 && y >= 8) clearInterval(interval);
-      }, 40);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const KURSE = [
-    {name:"HIIT Inferno",time:"06:00 & 18:00",level:"Intensiv",color:"#ef4444",spots:3},
-    {name:"Yoga Flow",time:"08:00 & 20:00",level:"Alle Level",color:"#8b5cf6",spots:8},
-    {name:"Powerlifting",time:"07:00 & 17:00",level:"Fortgeschritten",color:"#f59e0b",spots:5},
-    {name:"Cardio Blast",time:"09:00 & 19:00",level:"Mittel",color:"#10b981",spots:12},
-    {name:"Body Pump",time:"10:00 & 18:30",level:"Alle Level",color:"#06b6d4",spots:6},
-    {name:"Stretching",time:"07:30 & 21:00",level:"Einsteiger",color:"#ec4899",spots:15},
-  ];
-
+  const [tab, setTab] = useState("Mo–Fr");
+  const [sent, setSent] = useState(false);
   return (
-    <main style={{minHeight:"100vh",background:"#080810",color:"white",fontFamily:"'Segoe UI',sans-serif",overflowX:"hidden"}}>
+    <main className="fit-main">
+      <style>{`
+        .fit-main{min-height:100vh;background:#080810;color:white;font-family:'Segoe UI',sans-serif;overflow-x:hidden}
+        .fit-banner{background:linear-gradient(90deg,#ef4444,#8b5cf6);padding:9px;text-align:center;font-size:12px;font-weight:700}
+        .fit-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 48px;background:rgba(8,8,16,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(239,68,68,0.15)}
+        .fit-nav-links{display:flex;gap:24px}
+        .fit-hero{padding:70px 48px;position:relative;overflow:hidden}
+        .fit-h1{font-size:clamp(48px,7vw,90px);font-weight:900;line-height:0.95;letter-spacing:-3px;margin-bottom:18px}
+        .fit-stats{display:flex;gap:36px;margin-top:36px;flex-wrap:wrap}
+        .fit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .fit-grid-2{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+        .fit-preise{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .fit-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:20px;position:relative;overflow:hidden}
+        .fit-trainer{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:18px}
+        .fit-preis-card{border-radius:18px;padding:26px;position:relative}
+        .fit-cta{display:flex;gap:10px;flex-wrap:wrap}
+        .fit-btns{display:flex;gap:10px;justify-content:center}
+        .fit-section{padding:50px 48px;max-width:1100px;margin:0 auto}
+        .fit-contact{padding:50px 48px;max-width:560px;margin:0 auto;text-align:center}
+        .fit-footer{border-top:1px solid rgba(255,255,255,0.05);padding:18px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        @media(max-width:768px){
+          .fit-nav{padding:12px 16px}
+          .fit-nav-links{display:none}
+          .fit-hero{padding:50px 16px}
+          .fit-h1{font-size:clamp(34px,9vw,48px);letter-spacing:-2px}
+          .fit-stats{gap:18px}
+          .fit-grid{grid-template-columns:1fr 1fr;gap:8px}
+          .fit-grid-2{grid-template-columns:1fr;gap:10px}
+          .fit-preise{grid-template-columns:1fr;gap:10px}
+          .fit-card{padding:14px}
+          .fit-section{padding:40px 16px}
+          .fit-contact{padding:40px 16px}
+          .fit-footer{padding:16px}
+          .fit-cta{flex-direction:column}
+          .fit-btns{flex-direction:column}
+        }
+        @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #ef4444}50%{opacity:0.4}}
+      `}</style>
 
-      {/* DEMO BANNER */}
-      <div style={{background:"linear-gradient(90deg,#ef4444,#8b5cf6)",padding:"10px",textAlign:"center",fontSize:"13px",fontWeight:"700",letterSpacing:"1px"}}>
-        🎨 DEMO SEITE — Erstellt von <a href="/" style={{color:"white",textDecoration:"underline"}}>WebIT AI</a> · So könnte dein Fitness Studio aussehen!
+      <div className="fit-banner">
+        🎨 DEMO — <a href="https://webit-ai.de" style={{color:"white",textDecoration:"underline"}}>WebIT AI</a>
       </div>
 
-      {/* NAV */}
-      <nav style={{position:"sticky",top:0,zIndex:50,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"18px 48px",background:"rgba(8,8,16,0.9)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(239,68,68,0.15)"}}>
-        <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-          <div style={{width:"36px",height:"36px",background:"linear-gradient(135deg,#ef4444,#dc2626)",borderRadius:"8px",display:"flex",alignItems:"center",justifyContent:"center",fontWeight:"900",fontSize:"18px"}}>⚡</div>
-          <span style={{fontSize:"20px",fontWeight:"900",letterSpacing:"-0.5px"}}>IRON<span style={{color:"#ef4444"}}>FIT</span></span>
+      <nav className="fit-nav">
+        <span style={{fontSize:"18px",fontWeight:"900"}}>IRON<span style={{color:"#ef4444"}}>FIT</span></span>
+        <div className="fit-nav-links">
+          {["Kurse","Trainer","Preise","Kontakt"].map(n=><a key={n} href="#" style={{color:"rgba(255,255,255,0.45)",textDecoration:"none",fontSize:"14px"}}>{n}</a>)}
         </div>
-        <div style={{display:"flex",gap:"32px"}}>
-          {["Kurse","Trainer","Preise","Kontakt"].map(i=>(
-            <a key={i} href="#" style={{color:"rgba(255,255,255,0.5)",textDecoration:"none",fontSize:"14px",fontWeight:"500",transition:"color 0.2s"}}
-            onMouseEnter={e=>e.currentTarget.style.color="white"}
-            onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.5)"}>{i}</a>
-          ))}
-        </div>
-        <a href="#" style={{padding:"10px 24px",background:"#ef4444",borderRadius:"8px",color:"white",fontWeight:"700",fontSize:"14px",textDecoration:"none",transition:"all 0.2s"}}
-        onMouseEnter={e=>e.currentTarget.style.background="#dc2626"}
-        onMouseLeave={e=>e.currentTarget.style.background="#ef4444"}>Probetraining →</a>
+        <a href="#kontakt" style={{padding:"9px 16px",background:"#ef4444",borderRadius:"8px",color:"white",fontWeight:"700",fontSize:"13px",textDecoration:"none"}}>Probetraining</a>
       </nav>
 
       {/* HERO */}
-      <section style={{minHeight:"90vh",display:"flex",alignItems:"center",padding:"80px 48px",position:"relative",overflow:"hidden"}}>
-        {/* BG */}
-        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 70% 50%,rgba(239,68,68,0.12) 0%,transparent 60%)",pointerEvents:"none"}}/>
-        <div style={{position:"absolute",right:"48px",top:"50%",transform:"translateY(-50%)",fontSize:"280px",fontWeight:"900",color:"rgba(239,68,68,0.04)",letterSpacing:"-20px",userSelect:"none",pointerEvents:"none",lineHeight:1}}>IRON</div>
-
-        <div style={{maxWidth:"700px",opacity:loaded?1:0,transform:loaded?"translateY(0)":"translateY(30px)",transition:"all 1s ease"}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"6px 16px",background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.25)",borderRadius:"100px",fontSize:"11px",color:"#fca5a5",fontWeight:"700",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"28px"}}>
-            <span style={{width:"6px",height:"6px",borderRadius:"50%",background:"#ef4444",display:"inline-block",animation:"pulse 2s infinite"}}/>
-            Osternurken · Seit 2017
+      <section className="fit-hero">
+        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 70% 50%,rgba(239,68,68,0.12),transparent 60%)",pointerEvents:"none"}}/>
+        <div style={{maxWidth:"680px",position:"relative",zIndex:1}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"5px 14px",background:"rgba(239,68,68,0.1)",border:"1px solid rgba(239,68,68,0.25)",borderRadius:"100px",fontSize:"10px",color:"#fca5a5",fontWeight:"700",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"16px"}}>
+            <span style={{width:"6px",height:"6px",borderRadius:"50%",background:"#ef4444",display:"inline-block",animation:"pulse 2s infinite"}}/>Premium Fitnessstudio
           </div>
-          <h1 style={{fontSize:"clamp(48px,7vw,96px)",fontWeight:"900",lineHeight:"0.95",letterSpacing:"-4px",marginBottom:"24px"}}>
-            Kein<br/>
-            <span style={{color:"#ef4444"}}>Schmerz,</span><br/>
-            kein Erfolg.
-          </h1>
-          <p style={{color:"rgba(255,255,255,0.45)",fontSize:"18px",maxWidth:"480px",lineHeight:"1.7",marginBottom:"40px"}}>
-            Dein Premium Fitnessstudio — mit professionellen Trainern, modernsten Geräten und Kursen für jedes Level.
+          <h1 className="fit-h1">Kein Schmerz,<br/><span style={{color:"#ef4444"}}>kein Erfolg.</span></h1>
+          <p style={{color:"rgba(255,255,255,0.45)",fontSize:"15px",maxWidth:"460px",lineHeight:"1.7",marginBottom:"26px"}}>
+            Professionelle Trainer, modernste Geräte und Kurse für jedes Level.
           </p>
-          <div style={{display:"flex",gap:"14px",flexWrap:"wrap"}}>
-            <a href="#" style={{padding:"16px 40px",background:"#ef4444",borderRadius:"10px",color:"white",fontWeight:"700",fontSize:"16px",textDecoration:"none",boxShadow:"0 8px 32px rgba(239,68,68,0.4)",transition:"all 0.3s"}}
-            onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 16px 48px rgba(239,68,68,0.5)"}}
-            onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 8px 32px rgba(239,68,68,0.4)"}}>
-              🔥 Gratis Probetraining
-            </a>
-            <a href="#" style={{padding:"16px 40px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontWeight:"600",fontSize:"16px",textDecoration:"none",backdropFilter:"blur(10px)"}}>
-              Kurse ansehen
-            </a>
+          <div className="fit-cta">
+            <a href="#kontakt" style={{padding:"13px 28px",background:"#ef4444",borderRadius:"10px",color:"white",fontWeight:"700",fontSize:"15px",textDecoration:"none",boxShadow:"0 8px 28px rgba(239,68,68,0.35)"}}>🔥 Gratis Probetraining</a>
+            <a href="#kurse" style={{padding:"13px 28px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontWeight:"600",fontSize:"15px",textDecoration:"none"}}>Kurse ansehen ↓</a>
           </div>
-
-          {/* STATS */}
-          <div style={{display:"flex",gap:"40px",marginTop:"56px"}}>
-            {[{n:count.members>0?`${count.members.toLocaleString()}+`:"0",l:"Mitglieder"},{n:count.trainers>0?`${count.trainers}`:"0",l:"Trainer"},{n:count.years>0?`${count.years}`:"0",l:"Jahre Erfahrung"}].map((s,i)=>(
-              <div key={i}>
-                <div style={{fontSize:"36px",fontWeight:"900",color:"#ef4444",letterSpacing:"-1px"}}>{s.n}</div>
-                <div style={{fontSize:"12px",color:"rgba(255,255,255,0.35)",marginTop:"2px"}}>{s.l}</div>
-              </div>
+          <div className="fit-stats">
+            {[{n:"1.240+",l:"Mitglieder"},{n:"24",l:"Trainer"},{n:"8 J.",l:"Erfahrung"},{n:"6–22",l:"Öffnungszeit"}].map((s,i)=>(
+              <div key={i}><div style={{fontSize:"24px",fontWeight:"900",color:"#ef4444",letterSpacing:"-1px"}}>{s.n}</div><div style={{fontSize:"11px",color:"rgba(255,255,255,0.3)",marginTop:"2px"}}>{s.l}</div></div>
             ))}
           </div>
         </div>
       </section>
 
       {/* KURSE */}
-      <section style={{padding:"80px 48px",maxWidth:"1100px",margin:"0 auto"}}>
-        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"40px"}}>
+      <section id="kurse" className="fit-section">
+        <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"22px",flexWrap:"wrap",gap:"12px"}}>
           <div>
-            <p style={{color:"#ef4444",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"8px"}}>Stundenplan</p>
-            <h2 style={{fontSize:"clamp(28px,4vw,48px)",fontWeight:"900",letterSpacing:"-2px"}}>Unsere Kurse</h2>
+            <p style={{color:"#ef4444",fontSize:"10px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"4px"}}>Stundenplan</p>
+            <h2 style={{fontSize:"clamp(22px,4vw,36px)",fontWeight:"900",letterSpacing:"-1px"}}>Unsere Kurse</h2>
           </div>
           <div style={{display:"flex",gap:"4px",background:"rgba(255,255,255,0.04)",padding:"4px",borderRadius:"10px",border:"1px solid rgba(255,255,255,0.07)"}}>
-            {["Mo–Fr","Wochenende"].map(t=>(
-              <button key={t} onClick={()=>setActiveTab(t)} style={{padding:"8px 20px",borderRadius:"7px",background:activeTab===t?"#ef4444":"transparent",color:activeTab===t?"white":"rgba(255,255,255,0.4)",fontWeight:"600",fontSize:"13px",border:"none",cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}>{t}</button>
-            ))}
+            {["Mo–Fr","Wochenende"].map(t=><button key={t} onClick={()=>setTab(t)} style={{padding:"7px 14px",borderRadius:"7px",background:tab===t?"#ef4444":"transparent",color:tab===t?"white":"rgba(255,255,255,0.4)",fontWeight:"600",fontSize:"12px",border:"none",cursor:"pointer",fontFamily:"inherit"}}>{t}</button>)}
           </div>
         </div>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"14px"}}>
+        <div className="fit-grid">
           {KURSE.map((k,i)=>(
-            <div key={i} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"16px",padding:"24px",transition:"all 0.3s",cursor:"pointer",position:"relative",overflow:"hidden"}}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor=k.color+"55";e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.background=k.color+"0a"}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.07)";e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.background="rgba(255,255,255,0.03)"}}>
-              <div style={{position:"absolute",top:0,right:0,width:"60px",height:"60px",background:`radial-gradient(circle at 100% 0%,${k.color}22,transparent 70%)`,borderRadius:"0 16px 0 0"}}/>
-              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:"12px"}}>
-                <h3 style={{fontSize:"16px",fontWeight:"700"}}>{k.name}</h3>
-                <span style={{fontSize:"11px",padding:"3px 8px",background:k.color+"22",borderRadius:"100px",color:k.color,fontWeight:"600",whiteSpace:"nowrap"}}>{k.level}</span>
-              </div>
-              <div style={{color:"rgba(255,255,255,0.4)",fontSize:"13px",marginBottom:"14px"}}>⏰ {k.time}</div>
+            <div key={i} className="fit-card">
+              <div style={{position:"absolute",top:0,right:0,width:"40px",height:"40px",background:`radial-gradient(circle at 100% 0%,${k.color}25,transparent 70%)`,borderRadius:"0 14px 0 0"}}/>
+              <h3 style={{fontSize:"13px",fontWeight:"700",marginBottom:"4px"}}>{k.name}</h3>
+              <span style={{fontSize:"10px",padding:"2px 7px",background:k.color+"20",borderRadius:"100px",color:k.color,fontWeight:"600",display:"inline-block",marginBottom:"6px"}}>{k.level}</span>
+              <div style={{color:"rgba(255,255,255,0.4)",fontSize:"11px",marginBottom:"8px"}}>⏰ {k.time}</div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                <span style={{fontSize:"12px",color:k.spots<=5?"#ef4444":"rgba(255,255,255,0.3)"}}>{k.spots} Plätze frei</span>
-                <button style={{padding:"6px 14px",background:k.color,borderRadius:"6px",color:"white",fontWeight:"600",fontSize:"12px",border:"none",cursor:"pointer"}}>Buchen</button>
+                <span style={{fontSize:"10px",color:k.spots<=5?"#ef4444":"rgba(255,255,255,0.3)"}}>{k.spots} frei</span>
+                <button style={{padding:"4px 10px",background:k.color,borderRadius:"6px",color:"white",fontWeight:"600",fontSize:"11px",border:"none",cursor:"pointer"}}>Buchen</button>
               </div>
             </div>
           ))}
@@ -131,97 +117,61 @@ export default function FitnessDemo() {
       </section>
 
       {/* TRAINER */}
-      <section style={{padding:"80px 48px",maxWidth:"1100px",margin:"0 auto"}}>
-        <p style={{color:"#ef4444",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"8px"}}>Unser Team</p>
-        <h2 style={{fontSize:"clamp(28px,4vw,48px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"40px"}}>Professionelle Trainer</h2>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"20px"}}>
-          {[
-            {name:"Marco R.",spec:"Powerlifting & Kraft",exp:"8 Jahre",emoji:"💪"},
-            {name:"Sarah M.",spec:"Yoga & Wellness",exp:"6 Jahre",emoji:"🧘"},
-            {name:"Alex K.",spec:"HIIT & Cardio",exp:"5 Jahre",emoji:"⚡"},
-          ].map((t,i)=>(
-            <div key={i} style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:"20px",padding:"32px",textAlign:"center",transition:"all 0.3s"}}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(239,68,68,0.3)";e.currentTarget.style.transform="translateY(-4px)"}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor="rgba(255,255,255,0.07)";e.currentTarget.style.transform="translateY(0)"}}>
-              <div style={{width:"80px",height:"80px",borderRadius:"50%",background:"linear-gradient(135deg,#ef4444,#8b5cf6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px",margin:"0 auto 16px"}}>
-                {t.emoji}
-              </div>
-              <h3 style={{fontSize:"18px",fontWeight:"700",marginBottom:"6px"}}>{t.name}</h3>
-              <p style={{color:"#ef4444",fontSize:"13px",fontWeight:"600",marginBottom:"4px"}}>{t.spec}</p>
-              <p style={{color:"rgba(255,255,255,0.3)",fontSize:"12px"}}>{t.exp} Erfahrung</p>
+      <section className="fit-section">
+        <p style={{color:"#ef4444",fontSize:"10px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px"}}>Team</p>
+        <h2 style={{fontSize:"clamp(22px,4vw,36px)",fontWeight:"900",letterSpacing:"-1px",marginBottom:"22px"}}>Professionelle Trainer</h2>
+        <div className="fit-grid-2">
+          {[{name:"Marco R.",spec:"Powerlifting & Kraft",exp:"8 Jahre",emoji:"💪"},{name:"Sarah M.",spec:"Yoga & Wellness",exp:"6 Jahre",emoji:"🧘"},{name:"Alex K.",spec:"HIIT & Cardio",exp:"5 Jahre",emoji:"⚡"}].map((t,i)=>(
+            <div key={i} className="fit-trainer">
+              <div style={{width:"56px",height:"56px",flexShrink:0,borderRadius:"50%",background:"linear-gradient(135deg,#ef4444,#8b5cf6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px"}}>{t.emoji}</div>
+              <div><div style={{fontWeight:"700",fontSize:"15px",marginBottom:"3px"}}>{t.name}</div><div style={{color:"#ef4444",fontSize:"12px",marginBottom:"2px"}}>{t.spec}</div><div style={{color:"rgba(255,255,255,0.3)",fontSize:"11px"}}>{t.exp}</div></div>
             </div>
           ))}
         </div>
       </section>
 
       {/* PREISE */}
-      <section style={{padding:"80px 48px",maxWidth:"1100px",margin:"0 auto"}}>
-        <p style={{color:"#ef4444",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"8px",textAlign:"center"}}>Mitgliedschaft</p>
-        <h2 style={{fontSize:"clamp(28px,4vw,48px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"48px",textAlign:"center"}}>Wähle dein Paket</h2>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"16px"}}>
+      <section className="fit-section">
+        <p style={{color:"#ef4444",fontSize:"10px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px",textAlign:"center"}}>Mitgliedschaft</p>
+        <h2 style={{fontSize:"clamp(22px,4vw,36px)",fontWeight:"900",letterSpacing:"-1px",marginBottom:"26px",textAlign:"center"}}>Wähle dein Paket</h2>
+        <div className="fit-preise">
           {[
-            {name:"Basic",price:"29",per:"Monat",features:["Gerätebereich","Umkleiden & Duschen","Basis-Beratung"],color:"rgba(255,255,255,0.06)",border:"rgba(255,255,255,0.08)",popular:false},
-            {name:"Premium",price:"59",per:"Monat",features:["Alle Kurse inklusive","Persönlicher Trainingsplan","Sauna & Wellness","Ernährungsberatung"],color:"rgba(239,68,68,0.08)",border:"#ef4444",popular:true},
-            {name:"Elite",price:"99",per:"Monat",features:["Alles aus Premium","10x Personal Training","Lifestyle Coaching","VIP Zugang 24/7"],color:"rgba(139,92,246,0.06)",border:"rgba(139,92,246,0.3)",popular:false},
-          ].map(p=>(
-            <div key={p.name} style={{background:p.color,border:`1px solid ${p.border}`,borderRadius:"20px",padding:"32px",position:"relative",transform:p.popular?"translateY(-8px)":"none",boxShadow:p.popular?"0 0 60px rgba(239,68,68,0.15)":"none",transition:"all 0.3s"}}
-            onMouseEnter={e=>{if(!p.popular)e.currentTarget.style.transform="translateY(-4px)"}}
-            onMouseLeave={e=>{if(!p.popular)e.currentTarget.style.transform="translateY(0)"}}>
-              {p.popular&&<div style={{position:"absolute",top:"-1px",left:"50%",transform:"translateX(-50%)",background:"#ef4444",color:"white",fontSize:"10px",fontWeight:"700",letterSpacing:"2px",padding:"5px 14px",borderRadius:"0 0 8px 8px"}}>BELIEBT</div>}
-              <div style={{fontSize:"13px",fontWeight:"700",color:"rgba(255,255,255,0.4)",marginBottom:"12px",textTransform:"uppercase",letterSpacing:"1px"}}>{p.name}</div>
-              <div style={{marginBottom:"24px"}}>
-                <span style={{fontSize:"52px",fontWeight:"900",letterSpacing:"-2px"}}>€{p.price}</span>
-                <span style={{color:"rgba(255,255,255,0.35)",fontSize:"14px"}}>/{p.per}</span>
-              </div>
-              <ul style={{listStyle:"none",padding:0,marginBottom:"28px",display:"flex",flexDirection:"column",gap:"10px"}}>
-                {p.features.map(f=>(
-                  <li key={f} style={{fontSize:"14px",color:"rgba(255,255,255,0.55)",display:"flex",gap:"8px",alignItems:"center"}}>
-                    <span style={{color:"#ef4444",fontWeight:"700"}}>✓</span>{f}
-                  </li>
-                ))}
+            {name:"Basic",price:"29",features:["Gerätebereich","Umkleiden","Basis-Beratung"],ac:"rgba(255,255,255,0.04)",bc:"rgba(255,255,255,0.08)",pop:false},
+            {name:"Premium",price:"59",features:["Alle Kurse inklusive","Persönl. Trainingsplan","Sauna & Wellness","Ernährungsberatung"],ac:"rgba(239,68,68,0.07)",bc:"#ef4444",pop:true},
+            {name:"Elite",price:"99",features:["Alles aus Premium","10x Personal Training","Lifestyle Coaching","VIP Zugang 24/7"],ac:"rgba(139,92,246,0.06)",bc:"rgba(139,92,246,0.3)",pop:false},
+          ].map(pr=>(
+            <div key={pr.name} className="fit-preis-card" style={{background:pr.ac,border:`1px solid ${pr.bc}`,boxShadow:pr.pop?"0 0 48px rgba(239,68,68,0.12)":"none",position:"relative"}}>
+              {pr.pop&&<div style={{position:"absolute",top:"-1px",left:"50%",transform:"translateX(-50%)",background:"#ef4444",color:"white",fontSize:"9px",fontWeight:"700",letterSpacing:"2px",padding:"4px 12px",borderRadius:"0 0 8px 8px"}}>BELIEBT</div>}
+              <div style={{fontSize:"11px",fontWeight:"700",color:"rgba(255,255,255,0.4)",marginBottom:"8px",textTransform:"uppercase"}}>{pr.name}</div>
+              <div style={{marginBottom:"16px"}}><span style={{fontSize:"42px",fontWeight:"900",letterSpacing:"-1px"}}>€{pr.price}</span><span style={{color:"rgba(255,255,255,0.35)",fontSize:"12px"}}>/Monat</span></div>
+              <ul style={{listStyle:"none",padding:0,marginBottom:"18px",display:"flex",flexDirection:"column",gap:"7px"}}>
+                {pr.features.map(f=><li key={f} style={{fontSize:"13px",color:"rgba(255,255,255,0.55)",display:"flex",gap:"8px"}}><span style={{color:"#ef4444"}}>✓</span>{f}</li>)}
               </ul>
-              <button style={{width:"100%",padding:"13px",background:p.popular?"#ef4444":"transparent",border:p.popular?"none":`1px solid rgba(255,255,255,0.15)`,borderRadius:"10px",color:"white",fontWeight:"700",fontSize:"14px",cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}
-              onMouseEnter={e=>{if(!p.popular)e.currentTarget.style.background="rgba(255,255,255,0.08)"}}
-              onMouseLeave={e=>{if(!p.popular)e.currentTarget.style.background="transparent"}}>
-                {p.popular?"Jetzt Mitglied werden":"Auswählen →"}
-              </button>
+              <button style={{width:"100%",padding:"11px",background:pr.pop?"#ef4444":"transparent",border:pr.pop?"none":"1px solid rgba(255,255,255,0.12)",borderRadius:"10px",color:"white",fontWeight:"700",fontSize:"13px",cursor:"pointer",fontFamily:"inherit"}}>{pr.pop?"Jetzt Mitglied werden":"Auswählen →"}</button>
             </div>
           ))}
         </div>
       </section>
 
-      {/* CONTACT */}
-      <section style={{padding:"80px 48px",maxWidth:"700px",margin:"0 auto",textAlign:"center"}}>
-        <div style={{padding:"56px",background:"rgba(239,68,68,0.05)",border:"1px solid rgba(239,68,68,0.2)",borderRadius:"28px",backdropFilter:"blur(20px)"}}>
-          <div style={{fontSize:"40px",marginBottom:"14px"}}>💪</div>
-          <h2 style={{fontSize:"36px",fontWeight:"900",letterSpacing:"-1.5px",marginBottom:"12px"}}>
-            Starte heute.<br/><span style={{color:"#ef4444"}}>Nicht morgen.</span>
-          </h2>
-          <p style={{color:"rgba(255,255,255,0.4)",marginBottom:"32px",lineHeight:"1.7"}}>Gratis Probetraining — kein Vertrag, kein Risiko.</p>
-          <div style={{display:"flex",gap:"12px",justifyContent:"center",flexWrap:"wrap",marginBottom:"24px"}}>
-            <a href="tel:+49000000000" style={{padding:"14px 32px",background:"#ef4444",borderRadius:"10px",color:"white",fontWeight:"700",textDecoration:"none",fontSize:"15px"}}>📞 Jetzt anrufen</a>
-            <a href="mailto:info@ironfit.de" style={{padding:"14px 32px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontWeight:"600",textDecoration:"none",fontSize:"15px"}}>✉️ E-Mail schreiben</a>
-          </div>
-          <p style={{color:"rgba(255,255,255,0.2)",fontSize:"12px"}}>Brückenstr. 5 · 74749 Rosenberg · Mo–Fr 6–22 Uhr · Sa–So 8–20 Uhr</p>
+      {/* KONTAKT */}
+      <section id="kontakt" className="fit-contact">
+        <div style={{padding:"32px 24px",background:"rgba(239,68,68,0.05)",border:"1px solid rgba(239,68,68,0.2)",borderRadius:"20px"}}>
+          <div style={{fontSize:"36px",marginBottom:"10px"}}>💪</div>
+          <h2 style={{fontSize:"clamp(20px,5vw,30px)",fontWeight:"900",letterSpacing:"-1px",marginBottom:"8px"}}>Starte heute.<br/><span style={{color:"#ef4444"}}>Nicht morgen.</span></h2>
+          <p style={{color:"rgba(255,255,255,0.4)",marginBottom:"20px",fontSize:"13px"}}>Gratis Probetraining — kein Vertrag, kein Risiko.</p>
+          {sent?<div style={{color:"#ef4444",fontWeight:"700"}}>✓ Anfrage gesendet!</div>:(
+            <div className="fit-btns">
+              <a href="tel:+49000000000" style={{padding:"12px 22px",background:"#ef4444",borderRadius:"10px",color:"white",fontWeight:"700",textDecoration:"none",fontSize:"14px"}}>📞 Jetzt anrufen</a>
+              <button onClick={()=>setSent(true)} style={{padding:"12px 22px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontWeight:"600",fontSize:"14px",cursor:"pointer",fontFamily:"inherit"}}>✉️ Termin anfragen</button>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* FOOTER */}
-      <footer style={{borderTop:"1px solid rgba(255,255,255,0.05)",padding:"28px 48px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"16px"}}>
-        <span style={{fontWeight:"900",fontSize:"16px"}}>IRON<span style={{color:"#ef4444"}}>FIT</span></span>
-        <div style={{display:"flex",gap:"20px"}}>
-          <a href="#" style={{color:"rgba(255,255,255,0.25)",textDecoration:"none",fontSize:"13px"}}>Impressum</a>
-          <a href="#" style={{color:"rgba(255,255,255,0.25)",textDecoration:"none",fontSize:"13px"}}>Datenschutz</a>
-        </div>
-        <div style={{textAlign:"right"}}>
-          <p style={{color:"rgba(255,255,255,0.2)",fontSize:"12px"}}>Demo erstellt von</p>
-          <a href="/" style={{color:"#8b5cf6",textDecoration:"none",fontWeight:"700",fontSize:"13px"}}>WebIT AI ✦</a>
-        </div>
+      <footer className="fit-footer">
+        <span style={{fontWeight:"900"}}>IRON<span style={{color:"#ef4444"}}>FIT</span></span>
+        <span style={{color:"rgba(255,255,255,0.2)",fontSize:"12px"}}>Demo von <a href="https://webit-ai.de" style={{color:"#8b5cf6"}}>WebIT AI</a></span>
       </footer>
-
-      <style>{`
-        @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #ef4444}50%{opacity:0.4;box-shadow:0 0 3px #ef4444}}
-      `}</style>
     </main>
   );
 }

@@ -1,192 +1,130 @@
+// @ts-nocheck
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+const MENU={
+  "Antipasti":[{name:"Bruschetta al Pomodoro",desc:"Röstbrot, Tomaten, Basilikum",price:"8.50",veg:true},{name:"Burrata Pugliese",desc:"Cremige Burrata, Rucola, Kirschtomaten",price:"13.90",veg:true},{name:"Carpaccio di Manzo",desc:"Rindfleisch, Parmesan, Kapern",price:"16.50",veg:false}],
+  "Pasta":[{name:"Spaghetti Carbonara",desc:"Original röm. Art, Guanciale, Pecorino",price:"17.90",veg:false},{name:"Tagliatelle al Ragù",desc:"Hausgemachte Pasta, langsam geschmortes Ragù",price:"18.50",veg:false},{name:"Penne all'Arrabbiata",desc:"Würzige Tomatensauce, Knoblauch, Chili",price:"14.90",veg:true}],
+  "Secondi":[{name:"Branzino al Forno",desc:"Wolfsbarsch, Zitronenbutter, Kräuter",price:"28.90",veg:false},{name:"Bistecca Fiorentina",desc:"T-Bone 400g, Rosmarin, Meersalz",price:"42.00",veg:false},{name:"Pollo alla Griglia",desc:"Gegrilltes Huhn, mediterrane Kräuter",price:"22.50",veg:false}],
+  "Dessert":[{name:"Tiramisù",desc:"Mascarpone, Ladyfinger, Espresso",price:"8.90",veg:true},{name:"Panna Cotta",desc:"Erdbeercoulis, frische Beeren",price:"7.90",veg:true},{name:"Cannoli Siciliani",desc:"Ricotta, Pistazien, Orangenschale",price:"8.50",veg:true}],
+};
 
 export default function RestaurantDemo() {
-  const [loaded, setLoaded] = useState(false);
-  const [activeMenu, setActiveMenu] = useState("Vorspeisen");
-  const [reservation, setReservation] = useState({persons:"2",date:"",time:"19:00"});
-  const [reserved, setReserved] = useState(false);
-
-  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
-
-  const MENU: Record<string, {name:string,desc:string,price:string,tag?:string}[]> = {
-    "Vorspeisen": [
-      {name:"Burrata Classica",desc:"Büffelmozzarella, Kirschtomaten, Basilikum, Olivenöl extra vergine",price:"14,90",tag:"Chef's Pick"},
-      {name:"Carpaccio di Manzo",desc:"Hauchfein geschnittenes Rinderfilet, Rucola, Parmesan, Kapern",price:"16,50"},
-      {name:"Bruschetta Mista",desc:"Drei Variationen auf knusprigem Sauerteigbrot",price:"9,90"},
-    ],
-    "Hauptspeisen": [
-      {name:"Risotto ai Funghi",desc:"Cremiges Steinpilz-Risotto, Trüffelöl, Parmesan, frische Kräuter",price:"22,90",tag:"Signature"},
-      {name:"Saltimbocca Romano",desc:"Kalbsschnitzel, Prosciutto, Salbei, Weißwein-Soße",price:"28,50"},
-      {name:"Pasta alla Norma",desc:"Hausgemachte Paccheri, gebratene Aubergine, Ricotta salata",price:"18,90"},
-      {name:"Branzino al Forno",desc:"Ofengebackener Wolfsbarsch, mediterrane Gemüse, Zitrone",price:"32,00"},
-    ],
-    "Desserts": [
-      {name:"Tiramisù della Nonna",desc:"Hausrezept, Löffelbiskuit, Espresso, Mascarpone, Kakao",price:"8,90",tag:"Hausgemacht"},
-      {name:"Panna Cotta",desc:"Vanille, Erdbeercoulis, frische Beeren",price:"7,50"},
-      {name:"Affogato al Caffè",desc:"Vanilleeis, doppelter Espresso, Amaretto optional",price:"7,90"},
-    ],
-  };
-
+  const [cat, setCat] = useState("Antipasti");
+  const [sent, setSent] = useState(false);
   return (
-    <main style={{minHeight:"100vh",background:"#0c0a06",color:"#f5f0e8",fontFamily:"Georgia, serif",overflowX:"hidden"}}>
+    <main className="rist-main">
+      <style>{`
+        .rist-main{min-height:100vh;background:#0a0800;color:#f5f0e8;font-family:'Georgia',serif;overflow-x:hidden}
+        .rist-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 56px;background:rgba(10,8,0,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,175,55,0.12)}
+        .rist-nav-links{display:flex;gap:24px;font-family:'Segoe UI',sans-serif}
+        .rist-hero{padding:90px 56px;position:relative;overflow:hidden}
+        .rist-h1{font-size:clamp(40px,6vw,72px);font-weight:400;line-height:1.1;letter-spacing:-1px;margin-bottom:18px}
+        .rist-cta{display:flex;gap:12px;font-family:'Segoe UI',sans-serif;flex-wrap:wrap}
+        .rist-stats{display:flex;gap:32px;margin-top:32px;font-family:'Segoe UI',sans-serif;flex-wrap:wrap}
+        .rist-cats{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;font-family:'Segoe UI',sans-serif}
+        .rist-menu-row{display:flex;justify-content:space-between;align-items:center;padding:20px 28px;background:#0a0800;gap:12px}
+        .rist-form{display:flex;flex-direction:column;gap:12px;font-family:'Segoe UI',sans-serif}
+        .rist-section{padding:50px 56px;max-width:920px;margin:0 auto}
+        .rist-contact{padding:50px 56px;max-width:480px;margin:0 auto}
+        .rist-footer{border-top:1px solid rgba(212,175,55,0.08);padding:18px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-family:'Segoe UI',sans-serif}
+        @media(max-width:768px){
+          .rist-nav{padding:12px 16px}
+          .rist-nav-links{display:none}
+          .rist-hero{padding:52px 16px}
+          .rist-h1{font-size:clamp(30px,9vw,44px);letter-spacing:-0.5px}
+          .rist-cta{flex-direction:column}
+          .rist-stats{gap:18px}
+          .rist-menu-row{padding:14px 14px}
+          .rist-section{padding:40px 16px}
+          .rist-contact{padding:40px 16px}
+          .rist-footer{padding:16px}
+        }
+      `}</style>
 
-      {/* DEMO BANNER */}
-      <div style={{background:"linear-gradient(90deg,#8b5cf6,#ef4444)",padding:"10px",textAlign:"center",fontSize:"13px",fontWeight:"700",fontFamily:"'Segoe UI',sans-serif",letterSpacing:"1px"}}>
-        🎨 DEMO SEITE — Erstellt von <a href="/" style={{color:"white",textDecoration:"underline"}}>WebIT AI</a> · So könnte dein Restaurant aussehen!
+      <div style={{background:"linear-gradient(90deg,#d4af37,#b8941f)",padding:"9px",textAlign:"center",fontSize:"12px",fontWeight:"700",fontFamily:"'Segoe UI',sans-serif",color:"#0a0800"}}>
+        🎨 DEMO — <a href="https://webit-ai.de" style={{color:"#0a0800",fontWeight:"800"}}>WebIT AI</a>
       </div>
 
-      {/* NAV */}
-      <nav style={{position:"sticky",top:0,zIndex:50,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"18px 56px",background:"rgba(12,10,6,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(212,175,55,0.15)"}}>
-        <div style={{textAlign:"center"}}>
-          <div style={{fontSize:"22px",fontWeight:"700",letterSpacing:"3px",color:"#d4af37"}}>LA BELLA</div>
-          <div style={{fontSize:"10px",letterSpacing:"4px",color:"rgba(245,240,232,0.4)",textTransform:"uppercase"}}>Ristorante & Bar</div>
+      <nav className="rist-nav">
+        <div>
+          <div style={{fontWeight:"700",fontSize:"18px",letterSpacing:"2px",color:"#d4af37",fontFamily:"'Segoe UI',sans-serif"}}>LA BELLA</div>
+          <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(212,175,55,0.35)",fontFamily:"'Segoe UI',sans-serif"}}>RISTORANTE ITALIANO</div>
         </div>
-        <div style={{display:"flex",gap:"32px"}}>
-          {["Speisekarte","Geschichte","Reservierung","Kontakt"].map(i=>(
-            <a key={i} href="#" style={{color:"rgba(245,240,232,0.45)",textDecoration:"none",fontSize:"14px",letterSpacing:"1px",transition:"color 0.2s"}}
-            onMouseEnter={e=>e.currentTarget.style.color="#d4af37"}
-            onMouseLeave={e=>e.currentTarget.style.color="rgba(245,240,232,0.45)"}>{i}</a>
-          ))}
+        <div className="rist-nav-links">
+          {["Menü","Weine","Reservierung","Über uns"].map(n=><a key={n} href="#" style={{color:"rgba(245,240,232,0.4)",textDecoration:"none",fontSize:"13px"}}>{n}</a>)}
         </div>
-        <a href="#reservierung" style={{padding:"10px 24px",border:"1px solid #d4af37",borderRadius:"4px",color:"#d4af37",fontSize:"13px",textDecoration:"none",letterSpacing:"1px",transition:"all 0.3s"}}
-        onMouseEnter={e=>{e.currentTarget.style.background="#d4af37";e.currentTarget.style.color="#0c0a06"}}
-        onMouseLeave={e=>{e.currentTarget.style.background="transparent";e.currentTarget.style.color="#d4af37"}}>
-          RESERVIEREN
-        </a>
+        <a href="#reservierung" style={{padding:"8px 14px",border:"1px solid #d4af37",color:"#d4af37",fontSize:"12px",letterSpacing:"1px",textDecoration:"none",fontFamily:"'Segoe UI',sans-serif",fontWeight:"600"}}>RESERVIEREN</a>
       </nav>
 
       {/* HERO */}
-      <section style={{minHeight:"85vh",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",textAlign:"center",padding:"80px 48px",position:"relative",overflow:"hidden"}}>
-        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 60%,rgba(212,175,55,0.06) 0%,transparent 60%)",pointerEvents:"none"}}/>
-        <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(rgba(212,175,55,0.04) 1px,transparent 1px)",backgroundSize:"40px 40px",pointerEvents:"none"}}/>
-
-        <div style={{opacity:loaded?1:0,transform:loaded?"translateY(0)":"translateY(30px)",transition:"all 1.2s ease",position:"relative",zIndex:1}}>
-          <div style={{fontSize:"13px",letterSpacing:"6px",color:"#d4af37",textTransform:"uppercase",marginBottom:"20px",fontFamily:"'Segoe UI',sans-serif",fontWeight:"600"}}>
-            ✦ Cucina Italiana Autentica ✦
-          </div>
-          <h1 style={{fontSize:"clamp(48px,8vw,110px)",fontWeight:"400",lineHeight:"1",letterSpacing:"-2px",marginBottom:"24px",fontStyle:"italic"}}>
-            La <span style={{color:"#d4af37",fontStyle:"normal",fontWeight:"700"}}>Bella</span>
-          </h1>
-          <p style={{color:"rgba(245,240,232,0.45)",fontSize:"18px",maxWidth:"520px",margin:"0 auto 48px",lineHeight:"1.8",fontFamily:"'Segoe UI',sans-serif",fontStyle:"normal"}}>
-            Authentische italienische Küche — frische Zutaten, überlieferte Rezepte, unvergessliche Abende seit 2016.
+      <section className="rist-hero">
+        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 60% 50%,rgba(212,175,55,0.06),transparent 60%)",pointerEvents:"none"}}/>
+        <div style={{maxWidth:"600px",position:"relative",zIndex:1}}>
+          <div style={{fontSize:"10px",letterSpacing:"5px",color:"rgba(212,175,55,0.5)",fontFamily:"'Segoe UI',sans-serif",marginBottom:"14px",textTransform:"uppercase"}}>Dal 1985 · Milano</div>
+          <h1 className="rist-h1">La cucina<br/><em style={{color:"#d4af37"}}>dell'anima.</em></h1>
+          <p style={{color:"rgba(245,240,232,0.45)",fontSize:"15px",lineHeight:"1.9",maxWidth:"460px",marginBottom:"28px",fontFamily:"'Segoe UI',sans-serif"}}>
+            Authentische italienische Küche — hausgemachte Pasta, frischeste Zutaten.
           </p>
-          <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
-            <a href="#speisekarte" style={{padding:"15px 40px",background:"#d4af37",color:"#0c0a06",fontWeight:"700",fontSize:"14px",textDecoration:"none",letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:"'Segoe UI',sans-serif",transition:"all 0.3s"}}
-            onMouseEnter={e=>e.currentTarget.style.background="#b8962e"}
-            onMouseLeave={e=>e.currentTarget.style.background="#d4af37"}>
-              Speisekarte
-            </a>
-            <a href="#reservierung" style={{padding:"15px 40px",border:"1px solid rgba(245,240,232,0.2)",color:"rgba(245,240,232,0.7)",fontSize:"14px",textDecoration:"none",letterSpacing:"1.5px",textTransform:"uppercase",fontFamily:"'Segoe UI',sans-serif",transition:"all 0.3s"}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(245,240,232,0.5)"}
-            onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(245,240,232,0.2)"}>
-              Tisch reservieren
-            </a>
+          <div className="rist-cta">
+            <a href="#reservierung" style={{padding:"13px 28px",background:"#d4af37",color:"#0a0800",fontWeight:"700",fontSize:"13px",textDecoration:"none",letterSpacing:"1px"}}>TISCH RESERVIEREN</a>
+            <a href="#menu" style={{padding:"13px 28px",border:"1px solid rgba(212,175,55,0.3)",color:"rgba(212,175,55,0.7)",fontSize:"13px",textDecoration:"none",letterSpacing:"1px"}}>MENÜ ANSEHEN</a>
           </div>
-        </div>
-
-        {/* OPENING */}
-        <div style={{position:"absolute",bottom:"40px",left:"50%",transform:"translateX(-50%)",display:"flex",gap:"48px",fontFamily:"'Segoe UI',sans-serif"}}>
-          {[{l:"Dienstag–Freitag",v:"12:00 – 14:30 & 18:00 – 23:00"},{l:"Samstag–Sonntag",v:"12:00 – 23:00"}].map(h=>(
-            <div key={h.l} style={{textAlign:"center"}}>
-              <div style={{fontSize:"10px",letterSpacing:"2px",color:"#d4af37",textTransform:"uppercase",marginBottom:"4px"}}>{h.l}</div>
-              <div style={{fontSize:"13px",color:"rgba(245,240,232,0.5)"}}>{h.v}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* DIVIDER */}
-      <div style={{display:"flex",alignItems:"center",gap:"20px",padding:"0 80px",margin:"0 auto",maxWidth:"800px"}}>
-        <div style={{flex:1,height:"1px",background:"linear-gradient(90deg,transparent,rgba(212,175,55,0.3))"}}/>
-        <span style={{color:"#d4af37",fontSize:"20px"}}>✦</span>
-        <div style={{flex:1,height:"1px",background:"linear-gradient(90deg,rgba(212,175,55,0.3),transparent)"}}/>
-      </div>
-
-      {/* SPEISEKARTE */}
-      <section id="speisekarte" style={{padding:"80px 56px",maxWidth:"900px",margin:"0 auto"}}>
-        <div style={{textAlign:"center",marginBottom:"48px"}}>
-          <div style={{fontSize:"11px",letterSpacing:"4px",color:"#d4af37",textTransform:"uppercase",marginBottom:"12px",fontFamily:"'Segoe UI',sans-serif"}}>Unsere Karte</div>
-          <h2 style={{fontSize:"clamp(32px,5vw,60px)",fontWeight:"400",letterSpacing:"-1px",marginBottom:"32px",fontStyle:"italic"}}>Speisekarte</h2>
-          <div style={{display:"flex",gap:"4px",justifyContent:"center",background:"rgba(255,255,255,0.03)",padding:"4px",borderRadius:"6px",border:"1px solid rgba(212,175,55,0.1)",width:"fit-content",margin:"0 auto"}}>
-            {Object.keys(MENU).map(cat=>(
-              <button key={cat} onClick={()=>setActiveMenu(cat)} style={{padding:"9px 24px",borderRadius:"4px",background:activeMenu===cat?"#d4af37":"transparent",color:activeMenu===cat?"#0c0a06":"rgba(245,240,232,0.4)",fontWeight:activeMenu===cat?"700":"500",fontSize:"13px",border:"none",cursor:"pointer",fontFamily:"Georgia,serif",letterSpacing:"0.5px",transition:"all 0.2s"}}>{cat}</button>
+          <div className="rist-stats">
+            {[{n:"38+",l:"Jahre"},{n:"4.9★",l:"Google"},{n:"120",l:"Sitzplätze"},{n:"Di–So",l:"Geöffnet"}].map((s,i)=>(
+              <div key={i}><div style={{fontSize:"20px",fontWeight:"700",color:"#d4af37"}}>{s.n}</div><div style={{fontSize:"10px",color:"rgba(245,240,232,0.3)",marginTop:"2px"}}>{s.l}</div></div>
             ))}
           </div>
         </div>
-        <div style={{display:"flex",flexDirection:"column",gap:"0"}}>
-          {MENU[activeMenu].map((item,i)=>(
-            <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",padding:"24px 0",borderBottom:"1px solid rgba(212,175,55,0.08)",gap:"24px"}}>
+      </section>
+
+      {/* MENU */}
+      <section id="menu" className="rist-section">
+        <div style={{fontSize:"10px",letterSpacing:"4px",color:"rgba(212,175,55,0.4)",fontFamily:"'Segoe UI',sans-serif",marginBottom:"10px",textAlign:"center",textTransform:"uppercase"}}>La Nostra Cucina</div>
+        <h2 style={{fontSize:"clamp(24px,4vw,38px)",fontWeight:"400",marginBottom:"24px",textAlign:"center"}}>Il Menù</h2>
+        <div className="rist-cats">
+          {Object.keys(MENU).map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:"7px 18px",background:cat===c?"#d4af37":"transparent",border:`1px solid ${cat===c?"#d4af37":"rgba(212,175,55,0.2)"}`,color:cat===c?"#0a0800":"rgba(212,175,55,0.6)",fontSize:"12px",letterSpacing:"1px",cursor:"pointer",fontFamily:"inherit"}}>{c.toUpperCase()}</button>)}
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:"1px",background:"rgba(212,175,55,0.06)"}}>
+          {MENU[cat].map((item,i)=>(
+            <div key={i} className="rist-menu-row"
+            onMouseEnter={e=>e.currentTarget.style.background="#0f0d02"}
+            onMouseLeave={e=>e.currentTarget.style.background="#0a0800"}>
               <div style={{flex:1}}>
-                <div style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"6px"}}>
-                  <h3 style={{fontSize:"18px",fontWeight:"400",fontStyle:"italic"}}>{item.name}</h3>
-                  {item.tag&&<span style={{fontSize:"10px",padding:"2px 8px",background:"rgba(212,175,55,0.1)",border:"1px solid rgba(212,175,55,0.2)",color:"#d4af37",fontFamily:"'Segoe UI',sans-serif",fontStyle:"normal",letterSpacing:"1px"}}>{item.tag}</span>}
+                <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"4px",flexWrap:"wrap"}}>
+                  <span style={{fontWeight:"700",fontSize:"15px",color:"#f5f0e8"}}>{item.name}</span>
+                  {item.veg&&<span style={{fontSize:"9px",padding:"2px 6px",background:"rgba(16,185,129,0.15)",border:"1px solid rgba(16,185,129,0.3)",color:"#6ee7b7",borderRadius:"100px",fontFamily:"'Segoe UI',sans-serif"}}>VEG</span>}
                 </div>
-                <p style={{color:"rgba(245,240,232,0.4)",fontSize:"13px",lineHeight:"1.6",fontFamily:"'Segoe UI',sans-serif",fontStyle:"normal"}}>{item.desc}</p>
+                <div style={{fontSize:"12px",color:"rgba(245,240,232,0.35)",fontFamily:"'Segoe UI',sans-serif",lineHeight:"1.5"}}>{item.desc}</div>
               </div>
-              <div style={{fontSize:"18px",color:"#d4af37",fontWeight:"400",whiteSpace:"nowrap",fontFamily:"'Segoe UI',sans-serif"}}>€ {item.price}</div>
+              <div style={{fontWeight:"700",fontSize:"16px",color:"#d4af37",flexShrink:0}}>€{item.price}</div>
             </div>
           ))}
         </div>
-        <p style={{textAlign:"center",color:"rgba(245,240,232,0.2)",fontSize:"12px",marginTop:"24px",fontFamily:"'Segoe UI',sans-serif"}}>Alle Preise inkl. MwSt. · Allergene auf Anfrage</p>
       </section>
 
       {/* RESERVIERUNG */}
-      <section id="reservierung" style={{padding:"80px 56px",maxWidth:"700px",margin:"0 auto"}}>
-        <div style={{padding:"56px",background:"rgba(212,175,55,0.03)",border:"1px solid rgba(212,175,55,0.12)",borderRadius:"4px",fontFamily:"'Segoe UI',sans-serif"}}>
-          {!reserved ? (
-            <>
-              <div style={{textAlign:"center",marginBottom:"40px"}}>
-                <div style={{fontSize:"11px",letterSpacing:"4px",color:"#d4af37",textTransform:"uppercase",marginBottom:"10px"}}>Tisch reservieren</div>
-                <h2 style={{fontSize:"36px",fontWeight:"400",fontStyle:"italic",fontFamily:"Georgia,serif"}}>Reservierung</h2>
-              </div>
-              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px",marginBottom:"16px"}}>
-                <div>
-                  <label style={{display:"block",fontSize:"11px",letterSpacing:"2px",color:"rgba(245,240,232,0.4)",textTransform:"uppercase",marginBottom:"8px"}}>Personen</label>
-                  <select value={reservation.persons} onChange={e=>setReservation(r=>({...r,persons:e.target.value}))} style={{width:"100%",padding:"12px 16px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(212,175,55,0.15)",borderRadius:"4px",color:"#f5f0e8",fontSize:"14px",fontFamily:"'Segoe UI',sans-serif",outline:"none"}}>
-                    {["1","2","3","4","5","6","7","8+"].map(n=><option key={n} value={n} style={{background:"#1a1508"}}>{n} {n==="1"?"Person":"Personen"}</option>)}
-                  </select>
-                </div>
-                <div>
-                  <label style={{display:"block",fontSize:"11px",letterSpacing:"2px",color:"rgba(245,240,232,0.4)",textTransform:"uppercase",marginBottom:"8px"}}>Uhrzeit</label>
-                  <select value={reservation.time} onChange={e=>setReservation(r=>({...r,time:e.target.value}))} style={{width:"100%",padding:"12px 16px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(212,175,55,0.15)",borderRadius:"4px",color:"#f5f0e8",fontSize:"14px",fontFamily:"'Segoe UI',sans-serif",outline:"none"}}>
-                    {["12:00","12:30","13:00","13:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"].map(t=><option key={t} value={t} style={{background:"#1a1508"}}>{t} Uhr</option>)}
-                  </select>
-                </div>
-              </div>
-              <div style={{marginBottom:"24px"}}>
-                <label style={{display:"block",fontSize:"11px",letterSpacing:"2px",color:"rgba(245,240,232,0.4)",textTransform:"uppercase",marginBottom:"8px"}}>Datum</label>
-                <input type="date" value={reservation.date} onChange={e=>setReservation(r=>({...r,date:e.target.value}))} style={{width:"100%",padding:"12px 16px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(212,175,55,0.15)",borderRadius:"4px",color:"#f5f0e8",fontSize:"14px",fontFamily:"'Segoe UI',sans-serif",outline:"none",boxSizing:"border-box"}}/>
-              </div>
-              <button onClick={()=>reservation.date&&setReserved(true)} style={{width:"100%",padding:"15px",background:reservation.date?"#d4af37":"rgba(255,255,255,0.05)",border:"none",borderRadius:"4px",color:reservation.date?"#0c0a06":"rgba(255,255,255,0.2)",fontWeight:"700",fontSize:"14px",cursor:reservation.date?"pointer":"default",fontFamily:"'Segoe UI',sans-serif",letterSpacing:"2px",textTransform:"uppercase",transition:"all 0.3s"}}>
-                Tisch reservieren
-              </button>
-            </>
-          ) : (
-            <div style={{textAlign:"center",padding:"20px 0"}}>
-              <div style={{fontSize:"48px",marginBottom:"16px"}}>✦</div>
-              <h3 style={{fontSize:"28px",fontWeight:"400",fontStyle:"italic",fontFamily:"Georgia,serif",color:"#d4af37",marginBottom:"12px"}}>Grazie!</h3>
-              <p style={{color:"rgba(245,240,232,0.5)",lineHeight:"1.8"}}>Ihre Reservierung für <strong style={{color:"#f5f0e8"}}>{reservation.persons} {reservation.persons==="1"?"Person":"Personen"}</strong> am <strong style={{color:"#f5f0e8"}}>{reservation.date}</strong> um <strong style={{color:"#f5f0e8"}}>{reservation.time} Uhr</strong> wurde angefragt.</p>
-              <p style={{color:"rgba(245,240,232,0.3)",fontSize:"13px",marginTop:"12px"}}>Wir bestätigen per E-Mail innerhalb von 2 Stunden.</p>
-            </div>
-          )}
-        </div>
+      <section id="reservierung" className="rist-contact">
+        <div style={{fontSize:"10px",letterSpacing:"4px",color:"rgba(212,175,55,0.4)",fontFamily:"'Segoe UI',sans-serif",marginBottom:"10px",textTransform:"uppercase"}}>Reservierung</div>
+        <h2 style={{fontSize:"clamp(22px,4vw,30px)",fontWeight:"400",marginBottom:"22px"}}>Ihren Tisch reservieren</h2>
+        {sent?(
+          <div style={{padding:"28px",border:"1px solid rgba(212,175,55,0.2)",textAlign:"center",fontFamily:"'Segoe UI',sans-serif"}}>
+            <div style={{fontSize:"28px",marginBottom:"10px"}}>🍷</div>
+            <p style={{color:"#d4af37",fontWeight:"600"}}>Vielen Dank! Wir bestätigen binnen 2h.</p>
+          </div>
+        ):(
+          <div className="rist-form">
+            {["Ihr Name","Telefon oder E-Mail","Anzahl Personen","Datum & Uhrzeit"].map((ph,i)=>(
+              <input key={i} placeholder={ph} style={{background:"transparent",border:"none",borderBottom:"1px solid rgba(212,175,55,0.2)",padding:"11px 0",color:"#f5f0e8",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box"}}/>
+            ))}
+            <button onClick={()=>setSent(true)} style={{padding:"13px",background:"#d4af37",color:"#0a0800",fontWeight:"700",fontSize:"12px",letterSpacing:"1px",border:"none",cursor:"pointer",marginTop:"6px"}}>RESERVIERUNG SENDEN →</button>
+          </div>
+        )}
       </section>
 
-      {/* FOOTER */}
-      <footer style={{borderTop:"1px solid rgba(212,175,55,0.1)",padding:"32px 56px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"16px",fontFamily:"'Segoe UI',sans-serif"}}>
-        <div>
-          <div style={{fontSize:"16px",fontWeight:"700",letterSpacing:"3px",color:"#d4af37",fontFamily:"Georgia,serif"}}>LA BELLA</div>
-          <p style={{color:"rgba(245,240,232,0.2)",fontSize:"12px",marginTop:"4px"}}>Brückenstr. 5 · 74749 Rosenberg</p>
-        </div>
-        <div style={{display:"flex",gap:"20px"}}>
-          <a href="#" style={{color:"rgba(245,240,232,0.2)",textDecoration:"none",fontSize:"13px"}}>Impressum</a>
-          <a href="#" style={{color:"rgba(245,240,232,0.2)",textDecoration:"none",fontSize:"13px"}}>Datenschutz</a>
-        </div>
-        <div style={{textAlign:"right"}}>
-          <p style={{color:"rgba(245,240,232,0.18)",fontSize:"12px"}}>Demo erstellt von</p>
-          <a href="/" style={{color:"#8b5cf6",textDecoration:"none",fontWeight:"700",fontSize:"13px"}}>WebIT AI ✦</a>
-        </div>
+      <footer className="rist-footer">
+        <span style={{color:"#d4af37",fontWeight:"700",letterSpacing:"2px",fontSize:"13px"}}>LA BELLA</span>
+        <span style={{color:"rgba(245,240,232,0.2)",fontSize:"12px"}}>Demo von <a href="https://webit-ai.de" style={{color:"#d4af37"}}>WebIT AI</a></span>
       </footer>
     </main>
   );

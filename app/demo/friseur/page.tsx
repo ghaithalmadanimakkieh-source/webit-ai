@@ -1,266 +1,158 @@
+// @ts-nocheck
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+
+const SERVICES=[
+  {name:"Herrenschnitt",price:"35",dur:"45 min",emoji:"✂️",desc:"Schnitt, Waschen & Stylen"},
+  {name:"Damenschnitt",price:"55",dur:"60 min",emoji:"💇",desc:"Schnitt, Föhnen & Finish"},
+  {name:"Colorierung",price:"85",dur:"120 min",emoji:"🎨",desc:"Color, Highlights, Balayage"},
+  {name:"Bart-Trim",price:"20",dur:"30 min",emoji:"🪒",desc:"Trimmen, Formen & Pflegen"},
+  {name:"Keratin",price:"120",dur:"180 min",emoji:"✨",desc:"Glättungsbehandlung"},
+  {name:"Hochzeit",price:"150",dur:"90 min",emoji:"💍",desc:"Brautfrisur & Probe-Termin"},
+];
+const TEAM=[
+  {name:"Isabella V.",role:"Senior Stylistin · 12 J.",emoji:"👩‍🦱",color:"#ec4899"},
+  {name:"Marco B.",role:"Barber & Stylist · 8 J.",emoji:"💈",color:"#8b5cf6"},
+  {name:"Lea S.",role:"Coloristin · 6 J.",emoji:"🎨",color:"#f59e0b"},
+];
 
 export default function FriseurDemo() {
-  const [loaded, setLoaded] = useState(false);
-  const [selectedService, setSelectedService] = useState<number|null>(null);
-  const [step, setStep] = useState(1);
-  const [booked, setBooked] = useState(false);
-
-  useEffect(() => { setTimeout(() => setLoaded(true), 100); }, []);
-
-  const SERVICES = [
-    {name:"Herrenschnitt",desc:"Waschen, Schneiden, Stylen",price:"35",dur:"45 Min",icon:"✂️"},
-    {name:"Damenschnitt",desc:"Waschen, Schneiden, Föhnen",price:"55",dur:"60 Min",icon:"💇"},
-    {name:"Balayage",desc:"Highlights & Color Melt",price:"120",dur:"150 Min",icon:"🎨"},
-    {name:"Haartönung",desc:"Vollfarbe mit Pflege",price:"75",dur:"90 Min",icon:"✨"},
-    {name:"Bart-Styling",desc:"Trimmen, Formen, Pflege",price:"25",dur:"30 Min",icon:"🪒"},
-    {name:"Keratin-Kur",desc:"Intensive Glättungsbehandlung",price:"95",dur:"120 Min",icon:"💎"},
-  ];
-
-  const TIMES = ["09:00","09:30","10:00","10:30","11:00","11:30","14:00","14:30","15:00","15:30","16:00","16:30","17:00"];
-
+  const [active, setActive] = useState(0);
+  const [sent, setSent] = useState(false);
   return (
-    <main style={{minHeight:"100vh",background:"#fafaf8",color:"#1a1a1a",fontFamily:"'Segoe UI',sans-serif",overflowX:"hidden"}}>
+    <main className="fris-main">
+      <style>{`
+        .fris-main{min-height:100vh;background:#fafaf9;font-family:'Segoe UI',sans-serif;color:#1a1a2e;overflow-x:hidden}
+        .fris-nav{background:white;box-shadow:0 1px 14px rgba(0,0,0,0.07);padding:13px 48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+        .fris-nav-links{display:flex;gap:22px}
+        .fris-hero{background:linear-gradient(135deg,#1a1a2e,#2d1b69);color:white;padding:72px 48px;position:relative;overflow:hidden}
+        .fris-h1{font-size:clamp(36px,6vw,66px);font-weight:900;line-height:1;letter-spacing:-2px;margin-bottom:16px}
+        .fris-cta{display:flex;gap:10px;flex-wrap:wrap}
+        .fris-stats{display:flex;gap:28px;margin-top:28px;flex-wrap:wrap}
+        .fris-services{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .fris-team{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+        .fris-section{padding:50px 48px;max-width:960px;margin:0 auto}
+        .fris-team-section{background:#f8f7ff;padding:50px 48px}
+        .fris-contact{padding:50px 48px;max-width:500px;margin:0 auto}
+        .fris-footer{background:#1a1a2e;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+        .fris-input{width:100%;padding:11px 14px;border:1px solid #e2e8f0;border-radius:8px;font-size:14px;outline:none;box-sizing:border-box;margin-bottom:12px}
+        @media(max-width:768px){
+          .fris-nav{padding:12px 16px}
+          .fris-nav-links{display:none}
+          .fris-hero{padding:52px 16px}
+          .fris-h1{font-size:clamp(30px,9vw,44px);letter-spacing:-1px}
+          .fris-cta{flex-direction:column}
+          .fris-stats{gap:16px}
+          .fris-services{grid-template-columns:1fr 1fr;gap:8px}
+          .fris-team{grid-template-columns:1fr;gap:10px}
+          .fris-section{padding:40px 16px}
+          .fris-team-section{padding:40px 16px}
+          .fris-contact{padding:40px 16px}
+          .fris-footer{padding:16px}
+        }
+      `}</style>
 
-      {/* DEMO BANNER */}
-      <div style={{background:"linear-gradient(90deg,#8b5cf6,#ef4444)",padding:"10px",textAlign:"center",fontSize:"13px",fontWeight:"700",color:"white",letterSpacing:"1px"}}>
-        🎨 DEMO SEITE — Erstellt von <a href="/" style={{color:"white",textDecoration:"underline"}}>WebIT AI</a> · So könnte dein Friseursalon aussehen!
+      <div style={{background:"linear-gradient(90deg,#1a1a2e,#2d1b69)",color:"white",padding:"9px",textAlign:"center",fontSize:"12px",fontWeight:"600"}}>
+        🎨 DEMO — <a href="https://webit-ai.de" style={{color:"white",textDecoration:"underline"}}>WebIT AI</a>
       </div>
 
-      {/* NAV */}
-      <nav style={{position:"sticky",top:0,zIndex:50,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"18px 56px",background:"rgba(250,250,248,0.95)",backdropFilter:"blur(20px)",borderBottom:"1px solid rgba(0,0,0,0.06)"}}>
-        <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
-          <div style={{width:"38px",height:"38px",background:"#1a1a1a",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px"}}>✂️</div>
+      <nav className="fris-nav">
+        <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+          <div style={{width:"32px",height:"32px",background:"linear-gradient(135deg,#1a1a2e,#8b5cf6)",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"14px",color:"white"}}>✂️</div>
           <div>
-            <div style={{fontSize:"17px",fontWeight:"800",letterSpacing:"-0.5px",color:"#1a1a1a"}}>Studio <span style={{color:"#8b5cf6"}}>Élite</span></div>
-            <div style={{fontSize:"10px",color:"rgba(0,0,0,0.35)",letterSpacing:"2px",textTransform:"uppercase"}}>Hair & Beauty</div>
+            <div style={{fontWeight:"800",fontSize:"15px",color:"#1a1a2e"}}>Studio Élite</div>
+            <div style={{fontSize:"10px",color:"#94a3b8",letterSpacing:"1px"}}>PREMIUM FRISEUR</div>
           </div>
         </div>
-        <div style={{display:"flex",gap:"28px"}}>
-          {["Leistungen","Team","Galerie","Termine"].map(i=>(
-            <a key={i} href="#" style={{color:"rgba(0,0,0,0.4)",textDecoration:"none",fontSize:"14px",fontWeight:"500",transition:"color 0.2s"}}
-            onMouseEnter={e=>e.currentTarget.style.color="#1a1a1a"}
-            onMouseLeave={e=>e.currentTarget.style.color="rgba(0,0,0,0.4)"}>{i}</a>
-          ))}
+        <div className="fris-nav-links">
+          {["Leistungen","Team","Preise","Kontakt"].map(n=><a key={n} href="#" style={{color:"#64748b",textDecoration:"none",fontSize:"13px",fontWeight:"500"}}>{n}</a>)}
         </div>
-        <a href="#buchen" style={{padding:"10px 24px",background:"#1a1a1a",borderRadius:"100px",color:"white",fontWeight:"700",fontSize:"13px",textDecoration:"none",transition:"all 0.2s"}}
-        onMouseEnter={e=>e.currentTarget.style.background="#8b5cf6"}
-        onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>
-          Termin buchen
-        </a>
+        <a href="#termin" style={{padding:"9px 16px",background:"linear-gradient(135deg,#1a1a2e,#8b5cf6)",color:"white",borderRadius:"8px",fontWeight:"700",fontSize:"12px",textDecoration:"none"}}>Termin buchen</a>
       </nav>
 
       {/* HERO */}
-      <section style={{minHeight:"88vh",display:"grid",gridTemplateColumns:"1fr 1fr",alignItems:"center",padding:"60px 56px",gap:"60px",maxWidth:"1200px",margin:"0 auto"}}>
-        <div style={{opacity:loaded?1:0,transform:loaded?"translateX(0)":"translateX(-30px)",transition:"all 1s ease"}}>
-          <div style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"6px 16px",background:"rgba(139,92,246,0.08)",border:"1px solid rgba(139,92,246,0.15)",borderRadius:"100px",fontSize:"11px",color:"#8b5cf6",fontWeight:"700",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"28px"}}>
-            ✦ Premium Salon · Osternurken
+      <section className="fris-hero">
+        <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 80% 50%,rgba(139,92,246,0.15),transparent 50%)",pointerEvents:"none"}}/>
+        <div style={{maxWidth:"580px",position:"relative",zIndex:1}}>
+          <div style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"5px 14px",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"100px",fontSize:"10px",color:"rgba(255,255,255,0.7)",fontWeight:"600",letterSpacing:"2px",marginBottom:"16px"}}>
+            ✦ PREMIUM HAARSTUDIO · SEIT 2012
           </div>
-          <h1 style={{fontSize:"clamp(40px,5vw,72px)",fontWeight:"900",lineHeight:"1.05",letterSpacing:"-2.5px",marginBottom:"20px",color:"#1a1a1a"}}>
-            Dein Haar.<br/>
-            <span style={{color:"#8b5cf6"}}>Dein Style.</span><br/>
-            Dein Moment.
-          </h1>
-          <p style={{color:"rgba(0,0,0,0.45)",fontSize:"17px",maxWidth:"460px",lineHeight:"1.75",marginBottom:"40px"}}>
-            Professionelle Haarkunst mit über 10 Jahren Erfahrung — von der klassischen Pflege bis zum modernen Statement-Look.
-          </p>
-          <div style={{display:"flex",gap:"14px",flexWrap:"wrap"}}>
-            <a href="#buchen" style={{padding:"15px 36px",background:"#1a1a1a",borderRadius:"12px",color:"white",fontWeight:"700",fontSize:"15px",textDecoration:"none",transition:"all 0.3s"}}
-            onMouseEnter={e=>e.currentTarget.style.background="#8b5cf6"}
-            onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>
-              Termin buchen ✦
-            </a>
-            <a href="#leistungen" style={{padding:"15px 36px",background:"transparent",border:"2px solid rgba(0,0,0,0.1)",borderRadius:"12px",color:"#1a1a1a",fontWeight:"600",fontSize:"15px",textDecoration:"none",transition:"all 0.3s"}}
-            onMouseEnter={e=>e.currentTarget.style.borderColor="rgba(0,0,0,0.3)"}
-            onMouseLeave={e=>e.currentTarget.style.borderColor="rgba(0,0,0,0.1)"}>
-              Preisliste
-            </a>
+          <h1 className="fris-h1">Dein Haar.<br/><span style={{background:"linear-gradient(135deg,#c4b5fd,#f9a8d4)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Dein Statement.</span></h1>
+          <p style={{opacity:0.6,fontSize:"15px",lineHeight:"1.8",marginBottom:"26px",maxWidth:"400px"}}>Modernste Techniken, Premium-Produkte und ein Team das dich wirklich sieht.</p>
+          <div className="fris-cta">
+            <a href="#termin" style={{padding:"13px 26px",background:"white",color:"#1a1a2e",fontWeight:"700",borderRadius:"8px",textDecoration:"none",fontSize:"14px"}}>📅 Termin buchen</a>
+            <a href="#leistungen" style={{padding:"13px 26px",background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.2)",color:"white",fontWeight:"600",borderRadius:"8px",textDecoration:"none",fontSize:"14px"}}>Leistungen ↓</a>
           </div>
-          {/* MINI STATS */}
-          <div style={{display:"flex",gap:"32px",marginTop:"48px",paddingTop:"32px",borderTop:"1px solid rgba(0,0,0,0.07)"}}>
-            {[{n:"10+",l:"Jahre Erfahrung"},{n:"2.000+",l:"Zufriedene Kunden"},{n:"4.9★",l:"Google Bewertung"}].map(s=>(
-              <div key={s.l}>
-                <div style={{fontSize:"22px",fontWeight:"900",color:"#8b5cf6",letterSpacing:"-0.5px"}}>{s.n}</div>
-                <div style={{fontSize:"11px",color:"rgba(0,0,0,0.35)",marginTop:"2px"}}>{s.l}</div>
-              </div>
+          <div className="fris-stats">
+            {[{n:"500+",l:"Stammkunden"},{n:"12 J.",l:"Erfahrung"},{n:"4.9★",l:"Bewertung"},{n:"Mo–Sa",l:"Geöffnet"}].map((s,i)=>(
+              <div key={i}><div style={{fontSize:"20px",fontWeight:"900",color:"#c4b5fd"}}>{s.n}</div><div style={{fontSize:"10px",opacity:0.4,marginTop:"2px"}}>{s.l}</div></div>
             ))}
-          </div>
-        </div>
-
-        {/* HERO VISUAL */}
-        <div style={{opacity:loaded?1:0,transform:loaded?"translateX(0)":"translateX(30px)",transition:"all 1s ease 0.2s",position:"relative"}}>
-          <div style={{background:"linear-gradient(135deg,#f3f0ff,#fdf0f8)",borderRadius:"32px",padding:"48px",display:"flex",flexDirection:"column",gap:"16px",border:"1px solid rgba(139,92,246,0.1)"}}>
-            <div style={{display:"flex",alignItems:"center",gap:"12px",padding:"16px",background:"white",borderRadius:"12px",boxShadow:"0 2px 12px rgba(0,0,0,0.06)"}}>
-              <div style={{width:"44px",height:"44px",borderRadius:"50%",background:"linear-gradient(135deg,#8b5cf6,#ec4899)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"18px",flexShrink:0}}>💇</div>
-              <div>
-                <div style={{fontWeight:"700",fontSize:"14px",color:"#1a1a1a"}}>Nächster Termin</div>
-                <div style={{fontSize:"13px",color:"rgba(0,0,0,0.4)"}}>Heute · 15:30 Uhr</div>
-              </div>
-              <div style={{marginLeft:"auto",padding:"4px 12px",background:"rgba(16,185,129,0.1)",borderRadius:"100px",color:"#10b981",fontSize:"11px",fontWeight:"700"}}>Bestätigt</div>
-            </div>
-            {["Balayage · Sarah K. · 14:00","Herrenschnitt · Max M. · 16:00","Keratin-Kur · Jana B. · 17:30"].map((a,i)=>(
-              <div key={i} style={{display:"flex",alignItems:"center",gap:"10px",padding:"12px 16px",background:"rgba(255,255,255,0.6)",borderRadius:"10px",fontSize:"13px",color:"rgba(0,0,0,0.5)"}}>
-                <div style={{width:"8px",height:"8px",borderRadius:"50%",background:["#8b5cf6","#ef4444","#f59e0b"][i],flexShrink:0}}/>
-                {a}
-              </div>
-            ))}
-            <div style={{padding:"14px 16px",background:"rgba(139,92,246,0.08)",borderRadius:"10px",textAlign:"center",fontSize:"13px",color:"#8b5cf6",fontWeight:"600",border:"1px dashed rgba(139,92,246,0.2)"}}>
-              ✦ 3 freie Slots heute noch verfügbar
-            </div>
           </div>
         </div>
       </section>
 
       {/* LEISTUNGEN */}
-      <section id="leistungen" style={{padding:"80px 56px",background:"#f5f4f0"}}>
-        <div style={{maxWidth:"1100px",margin:"0 auto"}}>
-          <p style={{color:"#8b5cf6",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"8px"}}>Was wir anbieten</p>
-          <h2 style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"44px",color:"#1a1a1a"}}>Unsere Leistungen</h2>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"14px"}}>
-            {SERVICES.map((s,i)=>(
-              <div key={i} style={{background:"white",borderRadius:"16px",padding:"28px",transition:"all 0.3s",cursor:"pointer",border:"2px solid transparent",boxShadow:"0 2px 12px rgba(0,0,0,0.05)"}}
-              onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(139,92,246,0.3)";e.currentTarget.style.transform="translateY(-4px)";e.currentTarget.style.boxShadow="0 16px 40px rgba(139,92,246,0.1)"}}
-              onMouseLeave={e=>{e.currentTarget.style.borderColor="transparent";e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 2px 12px rgba(0,0,0,0.05)"}}>
-                <div style={{fontSize:"28px",marginBottom:"12px"}}>{s.icon}</div>
-                <h3 style={{fontSize:"16px",fontWeight:"700",color:"#1a1a1a",marginBottom:"6px"}}>{s.name}</h3>
-                <p style={{color:"rgba(0,0,0,0.4)",fontSize:"13px",marginBottom:"16px",lineHeight:"1.5"}}>{s.desc}</p>
-                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                  <div>
-                    <span style={{fontSize:"20px",fontWeight:"900",color:"#1a1a1a"}}>€{s.price}</span>
-                    <span style={{color:"rgba(0,0,0,0.3)",fontSize:"12px",marginLeft:"4px"}}>· {s.dur}</span>
-                  </div>
-                  <a href="#buchen" style={{padding:"7px 16px",background:"#1a1a1a",borderRadius:"8px",color:"white",fontWeight:"600",fontSize:"12px",textDecoration:"none",transition:"background 0.2s"}}
-                  onMouseEnter={e=>e.currentTarget.style.background="#8b5cf6"}
-                  onMouseLeave={e=>e.currentTarget.style.background="#1a1a1a"}>Buchen</a>
-                </div>
+      <section id="leistungen" className="fris-section">
+        <p style={{color:"#8b5cf6",fontSize:"10px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px",textAlign:"center"}}>Services</p>
+        <h2 style={{fontSize:"clamp(22px,4vw,34px)",fontWeight:"800",marginBottom:"24px",textAlign:"center"}}>Unsere Leistungen</h2>
+        <div className="fris-services">
+          {SERVICES.map((s,i)=>(
+            <div key={i} onClick={()=>setActive(i)}
+              style={{background:active===i?"linear-gradient(135deg,#1a1a2e,#2d1b69)":"white",border:`1px solid ${active===i?"transparent":"#e2e8f0"}`,borderRadius:"14px",padding:"18px",cursor:"pointer",transition:"all 0.3s",boxShadow:active===i?"0 12px 36px rgba(139,92,246,0.2)":"0 2px 8px rgba(0,0,0,0.04)"}}>
+              <div style={{fontSize:"26px",marginBottom:"7px"}}>{s.emoji}</div>
+              <div style={{fontWeight:"700",fontSize:"13px",marginBottom:"3px",color:active===i?"white":"#1a1a2e"}}>{s.name}</div>
+              <div style={{fontSize:"11px",color:active===i?"rgba(255,255,255,0.45)":"#94a3b8",marginBottom:"7px",lineHeight:"1.4"}}>{s.desc}</div>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                <span style={{fontWeight:"900",fontSize:"15px",color:active===i?"#c4b5fd":"#8b5cf6"}}>ab €{s.price}</span>
+                <span style={{fontSize:"10px",color:active===i?"rgba(255,255,255,0.35)":"#94a3b8"}}>{s.dur}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* TEAM */}
+      <section className="fris-team-section">
+        <div style={{maxWidth:"960px",margin:"0 auto"}}>
+          <p style={{color:"#8b5cf6",fontSize:"10px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px",textAlign:"center"}}>Unser Team</p>
+          <h2 style={{fontSize:"clamp(22px,4vw,34px)",fontWeight:"800",marginBottom:"24px",textAlign:"center"}}>Deine Stylisten</h2>
+          <div className="fris-team">
+            {TEAM.map((t,i)=>(
+              <div key={i} style={{background:"white",borderRadius:"14px",padding:"18px 20px",boxShadow:"0 2px 12px rgba(0,0,0,0.05)",display:"flex",alignItems:"center",gap:"14px"}}>
+                <div style={{width:"54px",height:"54px",flexShrink:0,borderRadius:"50%",background:`${t.color}18`,border:`2px solid ${t.color}33`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:"22px"}}>{t.emoji}</div>
+                <div><div style={{fontWeight:"700",fontSize:"14px",marginBottom:"3px"}}>{t.name}</div><div style={{fontSize:"12px",color:"#64748b"}}>{t.role}</div></div>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* TEAM */}
-      <section style={{padding:"80px 56px",maxWidth:"1100px",margin:"0 auto"}}>
-        <p style={{color:"#8b5cf6",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"8px"}}>Unser Team</p>
-        <h2 style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"44px",color:"#1a1a1a"}}>Eure Stylisten</h2>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:"20px"}}>
-          {[
-            {name:"Lena Wagner",spec:"Coloristin & Balayage",exp:"10 Jahre",emoji:"👩‍🎨"},
-            {name:"Marco Rossi",spec:"Herrenschnitt & Bart",exp:"7 Jahre",emoji:"💈"},
-            {name:"Sofia Klein",spec:"Bridal & Hochsteckfrisuren",exp:"8 Jahre",emoji:"👑"},
-          ].map((t,i)=>(
-            <div key={i} style={{background:"#f5f4f0",borderRadius:"20px",padding:"32px",textAlign:"center",transition:"all 0.3s",border:"2px solid transparent"}}
-            onMouseEnter={e=>{e.currentTarget.style.borderColor="rgba(139,92,246,0.2)";e.currentTarget.style.transform="translateY(-4px)"}}
-            onMouseLeave={e=>{e.currentTarget.style.borderColor="transparent";e.currentTarget.style.transform="translateY(0)"}}>
-              <div style={{width:"80px",height:"80px",borderRadius:"50%",background:"linear-gradient(135deg,#8b5cf6,#ef4444)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"32px",margin:"0 auto 16px"}}>
-                {t.emoji}
-              </div>
-              <h3 style={{fontSize:"17px",fontWeight:"700",color:"#1a1a1a",marginBottom:"5px"}}>{t.name}</h3>
-              <p style={{color:"#8b5cf6",fontSize:"13px",fontWeight:"600",marginBottom:"3px"}}>{t.spec}</p>
-              <p style={{color:"rgba(0,0,0,0.35)",fontSize:"12px"}}>{t.exp} Erfahrung</p>
-            </div>
-          ))}
-        </div>
+      {/* TERMIN */}
+      <section id="termin" className="fris-contact">
+        <p style={{color:"#8b5cf6",fontSize:"10px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"6px",textAlign:"center"}}>Buchung</p>
+        <h2 style={{fontSize:"clamp(22px,4vw,28px)",fontWeight:"800",marginBottom:"22px",textAlign:"center"}}>Termin vereinbaren</h2>
+        {sent?(
+          <div style={{background:"#f0fdf4",border:"1px solid #86efac",borderRadius:"14px",padding:"28px",textAlign:"center"}}>
+            <div style={{fontSize:"36px",marginBottom:"8px"}}>✅</div>
+            <h3 style={{fontWeight:"700",color:"#166534",marginBottom:"4px"}}>Termin angefragt!</h3>
+            <p style={{color:"#15803d",fontSize:"13px"}}>Wir bestätigen innerhalb von 24h.</p>
+          </div>
+        ):(
+          <div style={{background:"white",borderRadius:"14px",padding:"24px",boxShadow:"0 4px 20px rgba(0,0,0,0.07)"}}>
+            {["Dein Name","Telefon oder E-Mail","Gewünschte Leistung"].map((ph,i)=>(
+              <input key={i} className="fris-input" placeholder={ph}/>
+            ))}
+            <select className="fris-input" style={{background:"white",color:"#374151",cursor:"pointer"}}>
+              {["Nächstmöglicher Termin","Morgen Vormittag","Morgen Nachmittag","Nächste Woche"].map(o=><option key={o}>{o}</option>)}
+            </select>
+            <button onClick={()=>setSent(true)} style={{width:"100%",padding:"13px",background:"linear-gradient(135deg,#1a1a2e,#8b5cf6)",color:"white",fontWeight:"700",fontSize:"14px",borderRadius:"10px",border:"none",cursor:"pointer"}}>📅 Termin anfragen</button>
+          </div>
+        )}
       </section>
 
-      {/* TERMIN BUCHEN */}
-      <section id="buchen" style={{padding:"80px 56px",background:"#1a1a1a"}}>
-        <div style={{maxWidth:"800px",margin:"0 auto"}}>
-          <p style={{color:"#8b5cf6",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"8px",textAlign:"center"}}>Online buchen</p>
-          <h2 style={{fontSize:"clamp(28px,4vw,52px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"48px",color:"white",textAlign:"center"}}>Termin reservieren</h2>
-
-          {!booked ? (
-            <div style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"24px",padding:"40px",backdropFilter:"blur(10px)"}}>
-              {/* STEP INDICATOR */}
-              <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"36px",justifyContent:"center"}}>
-                {[1,2,3].map(s=>(
-                  <div key={s} style={{display:"flex",alignItems:"center",gap:"8px"}}>
-                    <div style={{width:"32px",height:"32px",borderRadius:"50%",background:step>=s?"#8b5cf6":"rgba(255,255,255,0.1)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"13px",fontWeight:"700",color:step>=s?"white":"rgba(255,255,255,0.3)",transition:"all 0.3s"}}>{s}</div>
-                    {s<3&&<div style={{width:"40px",height:"1px",background:step>s?"#8b5cf6":"rgba(255,255,255,0.1)",transition:"all 0.3s"}}/>}
-                  </div>
-                ))}
-              </div>
-
-              {step===1 && (
-                <div>
-                  <p style={{color:"rgba(255,255,255,0.5)",fontSize:"14px",textAlign:"center",marginBottom:"24px"}}>Welche Leistung möchtest du?</p>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"10px",marginBottom:"28px"}}>
-                    {SERVICES.map((s,i)=>(
-                      <div key={i} onClick={()=>setSelectedService(i)} style={{padding:"16px",background:selectedService===i?"rgba(139,92,246,0.2)":"rgba(255,255,255,0.04)",border:`1px solid ${selectedService===i?"#8b5cf6":"rgba(255,255,255,0.08)"}`,borderRadius:"12px",cursor:"pointer",transition:"all 0.2s",display:"flex",gap:"12px",alignItems:"center"}}>
-                        <span style={{fontSize:"20px"}}>{s.icon}</span>
-                        <div>
-                          <div style={{fontWeight:"600",fontSize:"14px",color:"white"}}>{s.name}</div>
-                          <div style={{fontSize:"12px",color:"rgba(255,255,255,0.35)"}}>{s.dur} · ab €{s.price}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <button onClick={()=>selectedService!==null&&setStep(2)} style={{width:"100%",padding:"14px",background:selectedService!==null?"#8b5cf6":"rgba(255,255,255,0.08)",border:"none",borderRadius:"12px",color:"white",fontWeight:"700",fontSize:"15px",cursor:selectedService!==null?"pointer":"default",fontFamily:"inherit",transition:"all 0.3s"}}>
-                    Weiter →
-                  </button>
-                </div>
-              )}
-
-              {step===2 && (
-                <div>
-                  <p style={{color:"rgba(255,255,255,0.5)",fontSize:"14px",textAlign:"center",marginBottom:"24px"}}>Wann möchtest du kommen?</p>
-                  <div style={{display:"flex",flexWrap:"wrap",gap:"8px",justifyContent:"center",marginBottom:"28px"}}>
-                    {TIMES.map(t=>(
-                      <button key={t} style={{padding:"10px 18px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"8px",color:"rgba(255,255,255,0.6)",fontSize:"13px",cursor:"pointer",fontFamily:"inherit",transition:"all 0.2s"}}
-                      onMouseEnter={e=>{e.currentTarget.style.background="rgba(139,92,246,0.3)";e.currentTarget.style.borderColor="#8b5cf6";e.currentTarget.style.color="white"}}
-                      onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.05)";e.currentTarget.style.borderColor="rgba(255,255,255,0.1)";e.currentTarget.style.color="rgba(255,255,255,0.6)"}}
-                      onClick={()=>setStep(3)}>{t}</button>
-                    ))}
-                  </div>
-                  <button onClick={()=>setStep(1)} style={{width:"100%",padding:"12px",background:"transparent",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"12px",color:"rgba(255,255,255,0.4)",fontSize:"14px",cursor:"pointer",fontFamily:"inherit"}}>← Zurück</button>
-                </div>
-              )}
-
-              {step===3 && (
-                <div>
-                  <p style={{color:"rgba(255,255,255,0.5)",fontSize:"14px",textAlign:"center",marginBottom:"24px"}}>Fast geschafft! Deine Daten:</p>
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"14px",marginBottom:"14px"}}>
-                    <input placeholder="Dein Name" style={{padding:"13px 16px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontSize:"14px",outline:"none",fontFamily:"inherit"}}/>
-                    <input placeholder="Telefon" style={{padding:"13px 16px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontSize:"14px",outline:"none",fontFamily:"inherit"}}/>
-                  </div>
-                  <input placeholder="E-Mail" style={{width:"100%",padding:"13px 16px",background:"rgba(255,255,255,0.06)",border:"1px solid rgba(255,255,255,0.1)",borderRadius:"10px",color:"white",fontSize:"14px",outline:"none",fontFamily:"inherit",marginBottom:"20px",boxSizing:"border-box"}}/>
-                  <button onClick={()=>setBooked(true)} style={{width:"100%",padding:"15px",background:"#8b5cf6",border:"none",borderRadius:"12px",color:"white",fontWeight:"700",fontSize:"15px",cursor:"pointer",fontFamily:"inherit",transition:"all 0.3s"}}
-                  onMouseEnter={e=>e.currentTarget.style.background="#7c3aed"}
-                  onMouseLeave={e=>e.currentTarget.style.background="#8b5cf6"}>
-                    ✓ Termin bestätigen
-                  </button>
-                  <button onClick={()=>setStep(2)} style={{width:"100%",padding:"12px",background:"transparent",border:"none",color:"rgba(255,255,255,0.3)",fontSize:"14px",cursor:"pointer",fontFamily:"inherit",marginTop:"8px"}}>← Zurück</button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div style={{background:"rgba(139,92,246,0.1)",border:"1px solid rgba(139,92,246,0.3)",borderRadius:"24px",padding:"56px",textAlign:"center",backdropFilter:"blur(10px)"}}>
-              <div style={{fontSize:"48px",marginBottom:"16px"}}>✦</div>
-              <h3 style={{fontSize:"28px",fontWeight:"900",color:"white",marginBottom:"10px"}}>Termin bestätigt!</h3>
-              <p style={{color:"rgba(255,255,255,0.5)",lineHeight:"1.8"}}>
-                Wir freuen uns auf deinen Besuch!<br/>Du erhältst eine Bestätigung per SMS.
-              </p>
-              <button onClick={()=>{setBooked(false);setStep(1);setSelectedService(null);}} style={{marginTop:"24px",padding:"12px 32px",background:"transparent",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"10px",color:"rgba(255,255,255,0.5)",fontSize:"14px",cursor:"pointer",fontFamily:"inherit"}}>Weiteren Termin buchen</button>
-            </div>
-          )}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{borderTop:"1px solid rgba(0,0,0,0.06)",padding:"28px 56px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"16px",background:"#fafaf8"}}>
-        <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-          <div style={{width:"30px",height:"30px",background:"#1a1a1a",borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"14px"}}>✂️</div>
-          <span style={{fontWeight:"800",fontSize:"14px",color:"#1a1a1a"}}>Studio <span style={{color:"#8b5cf6"}}>Élite</span></span>
-        </div>
-        <div style={{display:"flex",gap:"20px"}}>
-          <a href="#" style={{color:"rgba(0,0,0,0.25)",textDecoration:"none",fontSize:"13px"}}>Impressum</a>
-          <a href="#" style={{color:"rgba(0,0,0,0.25)",textDecoration:"none",fontSize:"13px"}}>Datenschutz</a>
-        </div>
-        <div style={{textAlign:"right"}}>
-          <p style={{color:"rgba(0,0,0,0.2)",fontSize:"12px"}}>Demo erstellt von</p>
-          <a href="/" style={{color:"#8b5cf6",textDecoration:"none",fontWeight:"700",fontSize:"13px"}}>WebIT AI ✦</a>
-        </div>
+      <footer className="fris-footer">
+        <span style={{color:"white",fontWeight:"700",fontSize:"14px"}}>Studio Élite</span>
+        <span style={{color:"rgba(255,255,255,0.3)",fontSize:"12px"}}>Demo von <a href="https://webit-ai.de" style={{color:"#c4b5fd"}}>WebIT AI</a></span>
       </footer>
     </main>
   );
