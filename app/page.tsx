@@ -51,8 +51,8 @@ const INDUSTRIES = [
   {icon:"🏥",name:"Arztpraxis",desc:"Healthcare",color:"#06b6d4",href:"/demo/arztpraxis"},
   {icon:"🏠",name:"Immobilien",desc:"Real Estate",color:"#10b981",href:"/demo/immobilien"},
   {icon:"⚖️",name:"Kanzlei",desc:"Legal & Law",color:"#f97316",href:"/demo/kanzlei"},
-  {icon:"🛒",name:"Online Shop",desc:"E-Commerce",color:"#ec4899",href:"#"},
-  {icon:"🎓",name:"Bildung",desc:"Schule / Kurs",color:"#a78bfa",href:"#"},
+  {icon:"🛒",name:"Online Shop",desc:"E-Commerce",color:"#ec4899",href:"/demo/shop"},
+  {icon:"🎓",name:"Bildung",desc:"Schule / Kurs",color:"#a78bfa",href:"/demo/bildung"},
 ];
 
 const BEFORE_AFTER = [
