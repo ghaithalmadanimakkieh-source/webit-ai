@@ -603,7 +603,7 @@ export default function Home() {
       </section>
 
       {/* ══ FOOTER ══ */}
-      <footer style={{borderTop:"1px solid rgba(255,255,255,0.04)",padding:isMobile?"18px 20px":"26px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
+      <footer style={{borderTop:"1px solid rgba(255,255,255,0.04)",padding:isMobile?"18px 20px 90px":"26px 40px",display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:"12px"}}>
         <a href="/" style={{display:"flex",alignItems:"center",gap:"8px",textDecoration:"none"}}>
           <WLogo size={22}/>
           <span style={{fontWeight:"800",fontSize:"14px",background:"linear-gradient(135deg,#8b5cf6,#ef4444)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>WebIT AI</span>
@@ -617,6 +617,36 @@ export default function Home() {
         </div>
         <span style={{color:"rgba(255,255,255,0.1)",fontSize:"11px"}}>© 2025 WebIT AI · Ghaith Almadani</span>
       </footer>
+
+      {/* ══ MOBILE BOTTOM NAV ══ */}
+      {isMobile && (
+        <nav style={{
+          position:"fixed",bottom:0,left:0,right:0,zIndex:200,
+          background:"rgba(8,8,18,0.92)",backdropFilter:"blur(24px)",
+          borderTop:"1px solid rgba(255,255,255,0.07)",
+          display:"flex",alignItems:"center",justifyContent:"space-around",
+          padding:"8px 0 calc(8px + env(safe-area-inset-bottom))",
+        }}>
+          {[
+            {icon:"🏠",label:"Home",href:"/"},
+            {icon:"🎨",label:"Demos",href:"#demos"},
+            {icon:"💰",label:"Preise",href:"#preise"},
+            {icon:"👤",label:"Über mich",href:"#ueber"},
+            {icon:"✉️",label:"Kontakt",href:"#kontakt"},
+          ].map(n=>(
+            <a key={n.label} href={n.href} style={{
+              display:"flex",flexDirection:"column",alignItems:"center",gap:"3px",
+              textDecoration:"none",padding:"4px 12px",borderRadius:"10px",
+              transition:"all 0.2s",
+            }}
+            onTouchStart={e=>e.currentTarget.style.background="rgba(139,92,246,0.15)"}
+            onTouchEnd={e=>e.currentTarget.style.background="transparent"}>
+              <span style={{fontSize:"20px"}}>{n.icon}</span>
+              <span style={{fontSize:"9px",color:"rgba(255,255,255,0.4)",fontWeight:"600",letterSpacing:"0.3px"}}>{n.label}</span>
+            </a>
+          ))}
+        </nav>
+      )}
 
       {/* ══ CHAT BUTTON — DRAGGABLE ══ */}
       <div
