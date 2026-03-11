@@ -60,14 +60,6 @@ const BEFORE_AFTER = [
     before:{title:"Keine Website",desc:"Kunden finden dich nicht auf Google. Du verlierst täglich Aufträge an die Konkurrenz.",icon:"😔"},
     after:{title:"Moderne Website",desc:"Professioneller Auftritt, SEO-optimiert — Kunden finden dich & buchen direkt online.",icon:"🚀"},
   },
-  {
-    before:{title:"Veraltetes Design",desc:"Deine Seite sieht aus wie 2005. Kunden zweifeln sofort an deiner Seriosität.",icon:"😞"},
-    after:{title:"Premium Design",desc:"Modernes, mobiles Design das Vertrauen schafft und Kunden überzeugt — sofort.",icon:"✨"},
-  },
-  {
-    before:{title:"Kein Chatbot",desc:"Kunden müssen selbst anrufen. Die meisten geben auf und gehen woanders hin.",icon:"📵"},
-    after:{title:"KI-Chatbot 24/7",desc:"Dein KI-Agent beantwortet Fragen um Mitternacht. Kein Kunde geht mehr verloren.",icon:"🤖"},
-  },
 ];
 
 function getBotAnswer(msg:string):string {
@@ -100,6 +92,179 @@ function WLogo({size=32}:{size?:number}) {
   );
 }
 
+function InteractiveCodeDemo({isMobile,pad,h2}:{isMobile:boolean,pad:string,h2:any}) {
+  const [lines, setLines] = useState<{id:number,text:string,color:string,x:number,y:number,opacity:number}[]>([]);
+  const [mousePos, setMousePos] = useState({x:50,y:50,active:false});
+  const [typing, setTyping] = useState<{text:string,color:string}[]>([]);
+  const [typingIdx, setTypingIdx] = useState(0);
+  const lidRef = useRef(0);
+  const boxRef = useRef<HTMLDivElement>(null);
+  const lastSpawn = useRef(0);
+
+  const CODE_SNIPPETS = [
+    {text:`const site = new WebITAI({`, color:"#8b5cf6"},
+    {text:`  design: "premium",`, color:"#a78bfa"},
+    {text:`  seo: true,`, color:"#10b981"},
+    {text:`  chatbot: "GPT-4",`, color:"#f59e0b"},
+    {text:`  mobile: "optimiert",`, color:"#8b5cf6"},
+    {text:`});`, color:"#a78bfa"},
+    {text:`// KI generiert deine Seite`, color:"#4ade80"},
+    {text:`await site.deploy(); // ✓ Live`, color:"#ef4444"},
+    {text:`<Hero gradient="purple→red" />`, color:"#8b5cf6"},
+    {text:`<KIBot model="gpt-4" lang="de" />`, color:"#f59e0b"},
+    {text:`<SEO rank="Google #1" />`, color:"#10b981"},
+    {text:`<Animation type="space" />`, color:"#a78bfa"},
+    {text:`export const speed = "3-5 Tage";`, color:"#ef4444"},
+    {text:`const price = { starter: 299 };`, color:"#8b5cf6"},
+    {text:`// WebIT AI — Next.js + KI`, color:"#4ade80"},
+    {text:`<MobileNav ios={true} android />`, color:"#f9a8d4"},
+  ];
+
+  useEffect(()=>{
+    const iv = setInterval(()=>{
+      if(!mousePos.active) return;
+      setTypingIdx(i=>{
+        const next = (i+1)%CODE_SNIPPETS.length;
+        setTyping(t=>[...t.slice(-8), CODE_SNIPPETS[next]]);
+        return next;
+      });
+    },420);
+    return ()=>clearInterval(iv);
+  },[mousePos.active]);
+
+  function onMove(e:React.MouseEvent) {
+    const r = boxRef.current?.getBoundingClientRect();
+    if(!r) return;
+    const x = (e.clientX-r.left)/r.width*100;
+    const y = (e.clientY-r.top)/r.height*100;
+    setMousePos({x,y,active:true});
+
+    const now = Date.now();
+    if(now - lastSpawn.current < 120) return;
+    lastSpawn.current = now;
+
+    const snippets = CODE_SNIPPETS;
+    const s = snippets[Math.floor(Math.random()*snippets.length)];
+    const id = lidRef.current++;
+    const px = e.clientX - r.left;
+    const py = e.clientY - r.top;
+    setLines(l=>[...l.slice(-20),{id,text:s.text,color:s.color,x:px,y:py,opacity:1}]);
+    setTimeout(()=>setLines(l=>l.filter(x=>x.id!==id)),1800);
+  }
+
+  return (
+    <section style={{padding:pad,maxWidth:"1000px",margin:"0 auto",position:"relative",zIndex:1}}>
+      <p style={{color:"#8b5cf6",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"12px",textAlign:"center"}}>Interaktiv</p>
+      <h2 style={{...h2,marginBottom:"8px",textAlign:"center"}}>WebIT AI beim Arbeiten</h2>
+      <p style={{color:"rgba(255,255,255,0.28)",textAlign:"center",marginBottom:"28px",fontSize:"13px"}}>
+        {isMobile?"Das baut WebIT AI für dich":"🖱 Maus über die Fläche bewegen — sieh wie Code entsteht"}
+      </p>
+
+      {/* THE BIG INTERACTIVE AREA */}
+      <div ref={boxRef} onMouseMove={onMove} onMouseLeave={()=>{setMousePos(m=>({...m,active:false}));setTyping([]);}}
+        style={{position:"relative",borderRadius:"24px",overflow:"hidden",
+          border:"1px solid rgba(139,92,246,0.2)",
+          background:"linear-gradient(135deg,#05040e,#080614,#06040c)",
+          cursor:"crosshair",userSelect:"none",minHeight:"360px",
+          boxShadow:"0 0 60px rgba(139,92,246,0.08)",
+        }}>
+
+        {/* Grid background */}
+        <div style={{position:"absolute",inset:0,backgroundImage:"linear-gradient(rgba(139,92,246,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,0.04) 1px,transparent 1px)",backgroundSize:"40px 40px",pointerEvents:"none"}}/>
+
+        {/* Mouse glow */}
+        <div style={{position:"absolute",pointerEvents:"none",zIndex:1,
+          left:`${mousePos.x}%`,top:`${mousePos.y}%`,
+          width:"400px",height:"400px",
+          transform:"translate(-50%,-50%)",
+          background:`radial-gradient(circle,rgba(139,92,246,${mousePos.active?0.14:0}) 0%,rgba(239,68,68,${mousePos.active?0.04:0}) 40%,transparent 65%)`,
+          transition:"left 0.04s,top 0.04s,background 0.3s",
+        }}/>
+
+        {/* Floating code lines from mouse */}
+        {lines.map(l=>(
+          <div key={l.id} style={{
+            position:"absolute",pointerEvents:"none",zIndex:5,
+            left:l.x,top:l.y,
+            fontSize:"12px",fontWeight:"700",color:l.color,
+            fontFamily:"'Courier New',monospace",
+            whiteSpace:"nowrap",
+            animation:"floatCode 1.8s ease-out forwards",
+            transform:"translateX(-40%)",
+            textShadow:`0 0 12px ${l.color}88`,
+          }}>{l.text}</div>
+        ))}
+
+        {/* Terminal panel — right side */}
+        <div style={{position:"absolute",top:"20px",right:"20px",width:isMobile?"calc(100% - 40px)":"320px",
+          background:"rgba(0,0,0,0.7)",border:"1px solid rgba(139,92,246,0.2)",
+          borderRadius:"14px",overflow:"hidden",backdropFilter:"blur(12px)",zIndex:6,
+        }}>
+          {/* Terminal header */}
+          <div style={{padding:"10px 14px",background:"rgba(255,255,255,0.03)",borderBottom:"1px solid rgba(255,255,255,0.05)",display:"flex",alignItems:"center",gap:"6px"}}>
+            <div style={{width:"10px",height:"10px",borderRadius:"50%",background:"#ef4444"}}/>
+            <div style={{width:"10px",height:"10px",borderRadius:"50%",background:"#f59e0b"}}/>
+            <div style={{width:"10px",height:"10px",borderRadius:"50%",background:"#10b981"}}/>
+            <span style={{marginLeft:"8px",fontSize:"11px",color:"rgba(255,255,255,0.3)",fontFamily:"monospace"}}>webit-ai.tsx</span>
+          </div>
+          {/* Terminal code lines */}
+          <div style={{padding:"14px",fontFamily:"'Courier New',monospace",fontSize:"11px",lineHeight:"1.9",minHeight:"160px"}}>
+            {typing.length===0 ? (
+              <div style={{color:"rgba(255,255,255,0.15)"}}>
+                <span style={{color:"#4ade80"}}>$</span> {isMobile?"Unten mehr sehen...":"Maus bewegen..."}
+                <span style={{animation:"blink 1s infinite",color:"#8b5cf6"}}>█</span>
+              </div>
+            ) : typing.map((t,i)=>(
+              <div key={i} style={{color:t.color,opacity:0.6+(i/typing.length)*0.4,
+                animation:`slideIn 0.2s ease both`}}>{t.text}</div>
+            ))}
+          </div>
+        </div>
+
+        {/* Left info — only when not hovering */}
+        <div style={{position:"relative",zIndex:2,padding:"36px 32px",maxWidth:isMobile?"100%":"55%"}}>
+          {!mousePos.active&&!isMobile ? (
+            <div style={{opacity:0.4,pointerEvents:"none"}}>
+              <div style={{fontSize:"40px",marginBottom:"16px"}}>🖱️</div>
+              <p style={{color:"rgba(255,255,255,0.4)",fontSize:"14px",lineHeight:"1.8"}}>Maus hier bewegen<br/>und sieh wie WebIT AI<br/>deine Website baut...</p>
+            </div>
+          ) : (
+            <div>
+              <div style={{display:"inline-flex",alignItems:"center",gap:"6px",padding:"4px 12px",background:"rgba(16,185,129,0.1)",border:"1px solid rgba(16,185,129,0.25)",borderRadius:"100px",fontSize:"10px",color:"#4ade80",fontWeight:"700",marginBottom:"16px"}}>
+                <span style={{width:"6px",height:"6px",background:"#4ade80",borderRadius:"50%",display:"inline-block",animation:"pulse 1s infinite"}}/>
+                KI generiert gerade...
+              </div>
+              <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
+                {["✦ Design wird erstellt","✦ SEO wird optimiert","✦ KI-Chatbot wird eingebaut","✦ Mobile wird angepasst"].map((t,i)=>(
+                  <div key={i} style={{fontSize:"13px",color:"rgba(255,255,255,0.5)",display:"flex",alignItems:"center",gap:"8px",
+                    animation:`fadeSlide 0.3s ease ${i*0.1}s both`}}>
+                    <span style={{color:"#8b5cf6"}}>{t}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom hint */}
+        {!mousePos.active&&!isMobile&&(
+          <div style={{position:"absolute",bottom:"16px",left:"50%",transform:"translateX(-50%)",fontSize:"11px",color:"rgba(255,255,255,0.12)",whiteSpace:"nowrap",pointerEvents:"none"}}>
+            🖱 Maus über diese Fläche bewegen
+          </div>
+        )}
+      </div>
+
+      <style>{`
+        @keyframes floatCode{0%{opacity:0;transform:translateX(-40%) translateY(0) scale(0.8)}10%{opacity:1;transform:translateX(-40%) translateY(-4px) scale(1)}80%{opacity:0.7}100%{opacity:0;transform:translateX(-40%) translateY(-60px) scale(0.9)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+        @keyframes slideIn{from{opacity:0;transform:translateX(-6px)}to{opacity:1;transform:translateX(0)}}
+        @keyframes fadeSlide{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+      `}</style>
+    </section>
+  );
+}
+
+
 export default function Home() {
   const [loaded, setLoaded] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
@@ -115,6 +280,11 @@ export default function Home() {
 
   // Hero hover glow — only tracks inside hero, NO global trail
   const [heroGlow, setHeroGlow] = useState({x:50,y:50,active:false});
+  // Global cursor glow
+  const [cursor, setCursor] = useState({x:-999,y:-999});
+  // Code particles
+  const [codeParticles, setCodeParticles] = useState<{id:number,x:number,y:number,char:string,color:string}[]>([]);
+  const particleId = useRef(0);
 
   // Draggable chat button
   const [chatPos, setChatPos] = useState({x:0, y:0});
@@ -199,7 +369,29 @@ export default function Home() {
   const h2 = {fontSize: isMobile?"clamp(24px,7vw,38px)":"clamp(28px,4vw,52px)" as string, fontWeight:"900", letterSpacing:"-2px"};
 
   return (
-    <main style={{minHeight:"100vh",background:"#050508",color:"white",fontFamily:"'Segoe UI',sans-serif",overflowX:"hidden"}}>
+    <main id="top" style={{minHeight:"100vh",background:"#050508",color:"white",fontFamily:"'Segoe UI',sans-serif",overflowX:"hidden"}}
+      onMouseMove={e=>{
+        if(isMobile) return;
+        setCursor({x:e.clientX,y:e.clientY});
+        // spawn code particle every ~80ms
+        if(Math.random()>0.7){
+          const chars=["</>","{}","[]","=>","AI","01","//","&&","px","🚀","✦","KI"];
+          const colors=["#8b5cf6","#ef4444","#a78bfa","#c4b5fd","#f9a8d4"];
+          const id=particleId.current++;
+          const p={id,x:e.clientX,y:e.clientY,char:chars[Math.floor(Math.random()*chars.length)],color:colors[Math.floor(Math.random()*colors.length)]};
+          setCodeParticles(prev=>[...prev.slice(-18),p]);
+          setTimeout(()=>setCodeParticles(prev=>prev.filter(x=>x.id!==id)),900);
+        }
+      }}
+      onMouseLeave={()=>setCursor({x:-999,y:-999})}>
+
+      {/* Global cursor glow */}
+      {!isMobile&&<div style={{position:"fixed",pointerEvents:"none",zIndex:0,left:cursor.x,top:cursor.y,width:"600px",height:"600px",transform:"translate(-50%,-50%)",background:"radial-gradient(circle,rgba(139,92,246,0.055) 0%,transparent 65%)",transition:"left 0.08s ease,top 0.08s ease"}}/>}
+
+      {/* Code particles */}
+      {!isMobile&&codeParticles.map(p=>(
+        <div key={p.id} style={{position:"fixed",pointerEvents:"none",zIndex:999,left:p.x,top:p.y,fontSize:"11px",fontWeight:"700",color:p.color,fontFamily:"monospace",whiteSpace:"nowrap",animation:"codeFloat 0.9s ease-out forwards",transform:"translateX(-50%)"}}>{p.char}</div>
+      ))}
 
       {/* ══ SPACE BACKGROUND ══ */}
       <div style={{position:"fixed",inset:0,zIndex:0,pointerEvents:"none",overflow:"hidden"}}>
@@ -286,11 +478,11 @@ export default function Home() {
           <div style={{position:"absolute",inset:0,backgroundImage:"linear-gradient(rgba(139,92,246,0.02) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,0.02) 1px,transparent 1px)",backgroundSize:"60px 60px",maskImage:"radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent)"}}/>
         </div>
 
-        {/* TICKER */}
-        <div style={{position:"absolute",top:isMobile?"68px":"78px",left:0,right:0,overflow:"hidden",maskImage:"linear-gradient(90deg,transparent,black 15%,black 85%,transparent)"}}>
-          <div style={{display:"flex",gap:"12px",animation:"scrollLeft 22s linear infinite",width:"max-content"}}>
-            {[...PROJECTS,...PROJECTS].map((p,i)=>(
-              <a key={i} href={p.href} style={{padding:"6px 14px",background:"rgba(255,255,255,0.03)",border:`1px solid ${p.color}33`,borderRadius:"100px",fontSize:"11px",fontWeight:"600",color:p.color,whiteSpace:"nowrap",textDecoration:"none"}}>{p.name} · {p.tag}</a>
+        {/* TICKER — seamless loop */}
+        <div style={{position:"absolute",top:isMobile?"68px":"78px",left:0,right:0,overflow:"hidden",maskImage:"linear-gradient(90deg,transparent,black 10%,black 90%,transparent)"}}>
+          <div style={{display:"flex",gap:"12px",animation:"scrollLeft 30s linear infinite",width:"max-content"}}>
+            {[...PROJECTS,...PROJECTS,...PROJECTS,...PROJECTS].map((p,i)=>(
+              <a key={i} href={p.href} style={{padding:"6px 14px",background:"rgba(255,255,255,0.03)",border:`1px solid ${p.color}33`,borderRadius:"100px",fontSize:"11px",fontWeight:"600",color:p.color,whiteSpace:"nowrap",textDecoration:"none",flexShrink:0}}>{p.name} · {p.tag}</a>
             ))}
           </div>
         </div>
@@ -331,56 +523,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ══ VORHER / NACHHER SWIPE ══ */}
+      {/* ══ VORHER / NACHHER ══ */}
       <section style={{padding:pad,maxWidth:"900px",margin:"0 auto",position:"relative",zIndex:1}}>
         <p style={{color:"#ef4444",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"12px",textAlign:"center"}}>Vergleich</p>
         <h2 style={{...h2,marginBottom:"8px",textAlign:"center"}}>Vorher vs. Nachher</h2>
-        <p style={{color:"rgba(255,255,255,0.3)",textAlign:"center",marginBottom:"24px",fontSize:"13px"}}>
-          {isMobile?"👆 Wische zum Vergleichen":"Sieh den Unterschied — ohne WebIT AI vs. mit WebIT AI"}
-        </p>
+        <p style={{color:"rgba(255,255,255,0.3)",textAlign:"center",marginBottom:"28px",fontSize:"13px"}}>Sieh den Unterschied — ohne WebIT AI vs. mit WebIT AI</p>
 
-        {/* Dots */}
-        <div style={{display:"flex",justifyContent:"center",gap:"6px",marginBottom:"18px"}}>
-          {BEFORE_AFTER.map((_,i)=>(
-            <button key={i} onClick={()=>setCompareIndex(i)} style={{width:compareIndex===i?"24px":"8px",height:"8px",borderRadius:"100px",background:compareIndex===i?"#8b5cf6":"rgba(255,255,255,0.15)",border:"none",cursor:"pointer",padding:0,transition:"all 0.3s"}}/>
-          ))}
-        </div>
-
-        <div onTouchStart={onCompareTouchStart} onTouchEnd={onCompareTouchEnd} style={{overflow:"hidden",borderRadius:"20px",border:"1px solid rgba(255,255,255,0.05)",touchAction:"pan-y"}}>
-          <div style={{display:"flex",transform:`translateX(${-compareIndex*100}%)`,transition:"transform 0.4s cubic-bezier(0.4,0,0.2,1)",width:`${BEFORE_AFTER.length*100}%`}}>
-            {BEFORE_AFTER.map((item,i)=>(
-              <div key={i} style={{width:`${100/BEFORE_AFTER.length}%`,display:"grid",gridTemplateColumns:"1fr 1fr",flexShrink:0}}>
-                {/* BEFORE */}
-                <div style={{padding:isMobile?"28px 18px":"48px 40px",background:"linear-gradient(135deg,#180606,#2a0a0a)",borderRight:"1px solid rgba(255,255,255,0.05)",position:"relative",overflow:"hidden"}}>
-                  <div style={{position:"absolute",top:0,right:0,bottom:0,left:0,background:"radial-gradient(circle at 80% 20%,rgba(239,68,68,0.06),transparent 60%)",pointerEvents:"none"}}/>
-                  <div style={{fontSize:isMobile?"30px":"42px",marginBottom:"12px"}}>{item.before.icon}</div>
-                  <div style={{fontSize:"9px",letterSpacing:"3px",color:"#ef4444",textTransform:"uppercase",fontWeight:"700",marginBottom:"8px"}}>Ohne WebIT AI</div>
-                  <h3 style={{fontSize:isMobile?"15px":"20px",fontWeight:"800",color:"#fca5a5",letterSpacing:"-0.5px",marginBottom:"10px"}}>{item.before.title}</h3>
-                  <p style={{color:"rgba(252,165,165,0.5)",fontSize:isMobile?"12px":"13px",lineHeight:"1.65"}}>{item.before.desc}</p>
-                  <div style={{position:"absolute",bottom:"12px",right:"14px",fontSize:"28px",opacity:0.07,color:"#ef4444",fontWeight:"900"}}>✗</div>
-                </div>
-                {/* AFTER */}
-                <div style={{padding:isMobile?"28px 18px":"48px 40px",background:"linear-gradient(135deg,#060612,#0a0820)",position:"relative",overflow:"hidden"}}>
-                  <div style={{position:"absolute",inset:0,background:"radial-gradient(circle at 30% 20%,rgba(139,92,246,0.1),transparent 60%)",pointerEvents:"none"}}/>
-                  <div style={{fontSize:isMobile?"30px":"42px",marginBottom:"12px"}}>{item.after.icon}</div>
-                  <div style={{fontSize:"9px",letterSpacing:"3px",color:"#8b5cf6",textTransform:"uppercase",fontWeight:"700",marginBottom:"8px"}}>Mit WebIT AI</div>
-                  <h3 style={{fontSize:isMobile?"15px":"20px",fontWeight:"800",color:"#a78bfa",letterSpacing:"-0.5px",marginBottom:"10px"}}>{item.after.title}</h3>
-                  <p style={{color:"rgba(167,139,250,0.6)",fontSize:isMobile?"12px":"13px",lineHeight:"1.65"}}>{item.after.desc}</p>
-                  <div style={{position:"absolute",bottom:"12px",right:"14px",fontSize:"28px",opacity:0.1,color:"#8b5cf6",fontWeight:"900"}}>✓</div>
-                </div>
-              </div>
-            ))}
+        <div style={{borderRadius:"20px",border:"1px solid rgba(255,255,255,0.07)",overflow:"hidden",
+          display:isMobile?"block":"grid",gridTemplateColumns:"1fr 1fr"}}>
+          {/* BEFORE */}
+          <div style={{padding:isMobile?"28px 22px":"52px 44px",
+            background:"linear-gradient(135deg,#1a0505,#2a0808)",
+            borderRight:isMobile?"none":"1px solid rgba(255,255,255,0.05)",
+            borderBottom:isMobile?"1px solid rgba(255,255,255,0.08)":"none",
+            position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",inset:0,background:"radial-gradient(circle at 80% 20%,rgba(239,68,68,0.1),transparent 60%)",pointerEvents:"none"}}/>
+            <div style={{fontSize:"44px",marginBottom:"14px"}}>😔</div>
+            <div style={{fontSize:"9px",letterSpacing:"3px",color:"#ef4444",textTransform:"uppercase",fontWeight:"700",marginBottom:"10px"}}>❌ Ohne WebIT AI</div>
+            <h3 style={{fontSize:isMobile?"20px":"24px",fontWeight:"800",color:"#fca5a5",marginBottom:"12px"}}>Keine Website</h3>
+            <p style={{color:"rgba(252,165,165,0.55)",fontSize:"14px",lineHeight:"1.8"}}>Kunden finden dich nicht auf Google. Du verlierst täglich Aufträge an die Konkurrenz.</p>
+            <div style={{marginTop:"18px",display:"flex",flexDirection:"column",gap:"8px"}}>
+              {["❌ Nicht auf Google","❌ Keine Online-Buchung","❌ Kein Vertrauen","❌ Kunden gehen woanders"].map(t=>(
+                <div key={t} style={{fontSize:"12px",color:"rgba(252,165,165,0.4)"}}>{t}</div>
+              ))}
+            </div>
+          </div>
+          {/* AFTER */}
+          <div style={{padding:isMobile?"28px 22px":"52px 44px",
+            background:"linear-gradient(135deg,#07060f,#0d0a1e)",
+            position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",inset:0,background:"radial-gradient(circle at 30% 20%,rgba(139,92,246,0.12),transparent 60%)",pointerEvents:"none"}}/>
+            <div style={{fontSize:"44px",marginBottom:"14px"}}>🚀</div>
+            <div style={{fontSize:"9px",letterSpacing:"3px",color:"#8b5cf6",textTransform:"uppercase",fontWeight:"700",marginBottom:"10px"}}>✅ Mit WebIT AI</div>
+            <h3 style={{fontSize:isMobile?"20px":"24px",fontWeight:"800",color:"#a78bfa",marginBottom:"12px"}}>Moderne Website</h3>
+            <p style={{color:"rgba(167,139,250,0.65)",fontSize:"14px",lineHeight:"1.8"}}>Professioneller Auftritt, SEO-optimiert — Kunden finden dich & buchen direkt online.</p>
+            <div style={{marginTop:"18px",display:"flex",flexDirection:"column",gap:"8px"}}>
+              {["✅ Seite 1 auf Google","✅ 24/7 Online-Buchung","✅ KI-Chatbot inklusive","✅ Kunden buchen direkt"].map(t=>(
+                <div key={t} style={{fontSize:"12px",color:"rgba(167,139,250,0.5)"}}>{t}</div>
+              ))}
+            </div>
           </div>
         </div>
-
-        {/* Desktop arrows */}
-        {!isMobile && (
-          <div style={{display:"flex",justifyContent:"center",gap:"10px",marginTop:"18px"}}>
-            <button onClick={()=>setCompareIndex(i=>Math.max(i-1,0))} style={{width:"38px",height:"38px",borderRadius:"50%",background:compareIndex>0?"rgba(139,92,246,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${compareIndex>0?"rgba(139,92,246,0.35)":"rgba(255,255,255,0.07)"}`,color:compareIndex>0?"white":"rgba(255,255,255,0.2)",fontSize:"15px",cursor:compareIndex>0?"pointer":"default",fontFamily:"inherit",transition:"all 0.2s"}}>←</button>
-            <button onClick={()=>setCompareIndex(i=>Math.min(i+1,BEFORE_AFTER.length-1))} style={{width:"38px",height:"38px",borderRadius:"50%",background:compareIndex<BEFORE_AFTER.length-1?"rgba(139,92,246,0.15)":"rgba(255,255,255,0.04)",border:`1px solid ${compareIndex<BEFORE_AFTER.length-1?"rgba(139,92,246,0.35)":"rgba(255,255,255,0.07)"}`,color:compareIndex<BEFORE_AFTER.length-1?"white":"rgba(255,255,255,0.2)",fontSize:"15px",cursor:compareIndex<BEFORE_AFTER.length-1?"pointer":"default",fontFamily:"inherit",transition:"all 0.2s"}}>→</button>
-          </div>
-        )}
       </section>
+
+      {/* ══ INTERACTIVE CODE DEMO ══ */}
+      <InteractiveCodeDemo isMobile={isMobile} pad={pad} h2={h2}/>
 
       {/* ══ ÜBER MICH ══ */}
       <section id="ueber" style={{padding:pad,maxWidth:"1000px",margin:"0 auto",position:"relative",zIndex:1}}>
@@ -412,7 +599,7 @@ export default function Home() {
             {/* Facts */}
             {[
               {icon:"📍",label:"Wohnort",value:"Rosenberg, Baden-Württemberg"},
-              {icon:"🎓",label:"Ausbildung",value:"KFZ-Mechatroniker · 3. Lehrjahr"},
+              {icon:"🎓",label:"Ausbildung",value:"KFZ-Mechatroniker · Fachbetrieb"},
               {icon:"💻",label:"Fokus",value:"Web-Entwicklung & KI-Integration"},
               {icon:"🚀",label:"Mission",value:"Kleine Betriebe digital stark machen"},
             ].map(f=>(
@@ -434,11 +621,11 @@ export default function Home() {
             <div style={{position:"relative",zIndex:1}}>
               <div style={{fontSize:"28px",marginBottom:"16px"}}>💡</div>
               <h3 style={{fontSize:isMobile?"18px":"22px",fontWeight:"900",letterSpacing:"-0.5px",marginBottom:"16px",lineHeight:"1.3"}}>
-                Azubi tagsüber —<br/>
-                <span style={{background:"linear-gradient(135deg,#8b5cf6,#ef4444)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Entwickler nachts.</span>
+                Tagsüber KFZ —<br/>
+                <span style={{background:"linear-gradient(135deg,#8b5cf6,#ef4444)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>Nachts Entwickler.</span>
               </h3>
               <p style={{color:"rgba(255,255,255,0.45)",fontSize:"14px",lineHeight:"1.9",marginBottom:"16px"}}>
-                Ich bin <strong style={{color:"white"}}>22 Jahre alt</strong> und mache meine Ausbildung zum KFZ-Mechatroniker — aber meine echte Leidenschaft ist die <strong style={{color:"white"}}>digitale Welt</strong>.
+                Ich bin <strong style={{color:"white"}}>22 Jahre alt</strong> und arbeite als KFZ-Mechatroniker — aber meine echte Leidenschaft ist die <strong style={{color:"white"}}>digitale Welt</strong>.
               </p>
               <p style={{color:"rgba(255,255,255,0.45)",fontSize:"14px",lineHeight:"1.9",marginBottom:"16px"}}>
                 Was als Hobby begann, ist heute <strong style={{color:"white"}}>WebIT AI</strong> — eine Agentur die kleinen Betrieben in Deutschland hilft, endlich online sichtbar zu werden. Mit echten KI-Tools, modernem Design und Technologien die sonst nur große Konzerne kennen.
@@ -615,34 +802,51 @@ export default function Home() {
             onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.18)"}>{l.label}</a>
           ))}
         </div>
-        <span style={{color:"rgba(255,255,255,0.1)",fontSize:"11px"}}>© 2025 WebIT AI · Ghaith Almadani</span>
+        <span style={{color:"rgba(255,255,255,0.1)",fontSize:"11px"}}>© 2026 WebIT AI · Ghaith Almadani</span>
       </footer>
 
       {/* ══ MOBILE BOTTOM NAV ══ */}
       {isMobile && (
         <nav style={{
           position:"fixed",bottom:0,left:0,right:0,zIndex:200,
-          background:"rgba(8,8,18,0.92)",backdropFilter:"blur(24px)",
+          background:"rgba(5,5,12,0.96)",backdropFilter:"blur(32px)",
           borderTop:"1px solid rgba(255,255,255,0.07)",
           display:"flex",alignItems:"center",justifyContent:"space-around",
-          padding:"8px 0 calc(8px + env(safe-area-inset-bottom))",
+          padding:"10px 8px calc(10px + env(safe-area-inset-bottom))",
         }}>
           {[
-            {icon:"🏠",label:"Home",href:"/"},
+            {icon:"🏠",label:"Home",href:"#top"},
             {icon:"🎨",label:"Demos",href:"#demos"},
             {icon:"💰",label:"Preise",href:"#preise"},
-            {icon:"👤",label:"Über mich",href:"#ueber"},
+            {icon:"👤",label:"Über",href:"#ueber"},
             {icon:"✉️",label:"Kontakt",href:"#kontakt"},
           ].map(n=>(
-            <a key={n.label} href={n.href} style={{
-              display:"flex",flexDirection:"column",alignItems:"center",gap:"3px",
-              textDecoration:"none",padding:"4px 12px",borderRadius:"10px",
-              transition:"all 0.2s",
-            }}
-            onTouchStart={e=>e.currentTarget.style.background="rgba(139,92,246,0.15)"}
-            onTouchEnd={e=>e.currentTarget.style.background="transparent"}>
-              <span style={{fontSize:"20px"}}>{n.icon}</span>
-              <span style={{fontSize:"9px",color:"rgba(255,255,255,0.4)",fontWeight:"600",letterSpacing:"0.3px"}}>{n.label}</span>
+            <a key={n.label} href={n.href}
+              style={{
+                display:"flex",flexDirection:"column",alignItems:"center",gap:"3px",
+                textDecoration:"none",padding:"6px 14px",borderRadius:"14px",
+                transition:"all 0.18s cubic-bezier(0.34,1.56,0.64,1)",
+                WebkitTapHighlightColor:"transparent",
+                minWidth:"52px",
+              }}
+              onTouchStart={e=>{
+                const el = e.currentTarget;
+                el.style.transform="scale(1.22)";
+                el.style.background="rgba(139,92,246,0.18)";
+                const icon = el.querySelector(".nav-icon") as HTMLElement;
+                if(icon) icon.style.filter="drop-shadow(0 0 6px rgba(139,92,246,0.8))";
+              }}
+              onTouchEnd={e=>{
+                const el = e.currentTarget;
+                setTimeout(()=>{
+                  el.style.transform="scale(1)";
+                  el.style.background="transparent";
+                  const icon = el.querySelector(".nav-icon") as HTMLElement;
+                  if(icon) icon.style.filter="none";
+                },150);
+              }}>
+              <span className="nav-icon" style={{fontSize:"22px",transition:"all 0.18s",display:"block"}}>{n.icon}</span>
+              <span style={{fontSize:"9px",color:"rgba(255,255,255,0.35)",fontWeight:"600",letterSpacing:"0.3px",transition:"color 0.18s"}}>{n.label}</span>
             </a>
           ))}
         </nav>
@@ -740,6 +944,7 @@ export default function Home() {
         @keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 8px #8b5cf6}50%{opacity:0.4}}
         @keyframes dot{0%,60%,100%{transform:translateY(0);opacity:0.32}30%{transform:translateY(-5px);opacity:1}}
         @keyframes chatBounce{0%,100%{transform:scale(1) translateY(0)}20%{transform:scale(1.18) translateY(-10px)}40%{transform:scale(1.06) translateY(-5px)}60%{transform:scale(1.12) translateY(-8px)}80%{transform:scale(1.03) translateY(-2px)}}
+        @keyframes codeFloat{0%{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}100%{opacity:0;transform:translateX(-50%) translateY(-48px) scale(0.7)}}
         ::-webkit-scrollbar{display:none}
       `}</style>
     </main>
