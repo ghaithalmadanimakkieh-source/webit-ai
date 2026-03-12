@@ -288,6 +288,9 @@ export default function Home() {
 
   // Draggable chat button
   const [chatPos, setChatPos] = useState({x:0, y:0});
+  const [formData, setFormData] = useState({name:"",email:"",message:""});
+  const [formSent, setFormSent] = useState(false);
+  const [formSending, setFormSending] = useState(false);
   const isDragging = useRef(false);
   const dragOrigin = useRef({mx:0, my:0, px:0, py:0});
   const didDrag = useRef(false);
@@ -766,25 +769,107 @@ export default function Home() {
 
       {/* ══ KONTAKT ══ */}
       <section id="kontakt" style={{padding:pad,maxWidth:"640px",margin:"0 auto",textAlign:"center",position:"relative",zIndex:1}}>
-        <div style={{padding:isMobile?"36px 22px":"52px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"24px",backdropFilter:"blur(24px)",position:"relative",overflow:"hidden"}}>
+        <div style={{padding:isMobile?"28px 18px":"52px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"24px",backdropFilter:"blur(24px)",position:"relative",overflow:"hidden"}}>
           <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(139,92,246,0.07),transparent 60%)",pointerEvents:"none"}}/>
           <div style={{position:"relative",zIndex:1}}>
             <div style={{display:"flex",justifyContent:"center",marginBottom:"12px"}}><WLogo size={40}/></div>
             <p style={{color:"#8b5cf6",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"10px"}}>Starte jetzt</p>
-            <h2 style={{fontSize:isMobile?"clamp(22px,7vw,36px)":"clamp(24px,4vw,40px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"12px"}}>
+            <h2 style={{fontSize:isMobile?"clamp(22px,7vw,32px)":"clamp(24px,4vw,40px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"10px"}}>
               Deine digitale Zukunft<br/>
               <span style={{background:"linear-gradient(135deg,#8b5cf6,#ef4444)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>beginnt heute.</span>
             </h2>
-            <p style={{color:"rgba(255,255,255,0.3)",lineHeight:"1.7",marginBottom:"28px",fontSize:"14px"}}>Kostenlose Erstberatung · Kein Risiko · Antwort in 24h</p>
-            <a href="mailto:ghaith.almadani.makkieh@gmail.com"
-              style={{display:"inline-block",padding:"14px 40px",borderRadius:"12px",background:"linear-gradient(135deg,#8b5cf6,#ef4444)",color:"white",fontWeight:"700",fontSize:"15px",textDecoration:"none",boxShadow:"0 8px 40px rgba(139,92,246,0.25)",transition:"all 0.3s"}}
-              onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow="0 16px 60px rgba(139,92,246,0.4)"}}
-              onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 8px 40px rgba(139,92,246,0.25)"}}>
-              ✉️ Jetzt kostenlos anfragen
-            </a>
-            <p style={{marginTop:"16px",color:"rgba(255,255,255,0.2)",fontSize:"13px"}}>
-              📞 <a href="tel:+4917685974436" style={{color:"rgba(255,255,255,0.35)",textDecoration:"none"}}>+49 176 85974436</a>
-            </p>
+            <p style={{color:"rgba(255,255,255,0.3)",lineHeight:"1.7",marginBottom:"24px",fontSize:"14px"}}>Kostenlose Erstberatung · Kein Risiko · Antwort in 24h</p>
+
+            {/* WHATSAPP + CALL BUTTONS */}
+            <div style={{display:"flex",gap:"10px",justifyContent:"center",marginBottom:"24px",flexWrap:"wrap"}}>
+              <a href="https://wa.me/4917685974436?text=Hallo%20Ghaith!%20Ich%20interessiere%20mich%20f%C3%BCr%20eine%20Webseite%20von%20WebIT%20AI."
+                target="_blank" rel="noopener noreferrer"
+                style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"12px 22px",borderRadius:"12px",background:"linear-gradient(135deg,#25d366,#128c7e)",color:"white",fontWeight:"700",fontSize:"14px",textDecoration:"none",boxShadow:"0 6px 24px rgba(37,211,102,0.3)",transition:"all 0.3s"}}
+                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 12px 36px rgba(37,211,102,0.4)"}}
+                onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 6px 24px rgba(37,211,102,0.3)"}}>
+                💬 WhatsApp schreiben
+              </a>
+              <a href="tel:+4917685974436"
+                style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"12px 22px",borderRadius:"12px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"white",fontWeight:"600",fontSize:"14px",textDecoration:"none",transition:"all 0.3s"}}
+                onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.09)"}
+                onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.05)"}>
+                📞 Anrufen
+              </a>
+            </div>
+
+            {/* DIVIDER */}
+            <div style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:"22px"}}>
+              <div style={{flex:1,height:"1px",background:"rgba(255,255,255,0.06)"}}/>
+              <span style={{color:"rgba(255,255,255,0.2)",fontSize:"12px"}}>oder Formular</span>
+              <div style={{flex:1,height:"1px",background:"rgba(255,255,255,0.06)"}}/>
+            </div>
+
+            {/* CONTACT FORM */}
+            {formSent ? (
+              <div style={{padding:"28px",background:"rgba(139,92,246,0.08)",border:"1px solid rgba(139,92,246,0.2)",borderRadius:"16px",textAlign:"center"}}>
+                <div style={{fontSize:"40px",marginBottom:"10px"}}>✅</div>
+                <h3 style={{fontWeight:"800",fontSize:"18px",marginBottom:"6px"}}>Nachricht gesendet!</h3>
+                <p style={{color:"rgba(255,255,255,0.4)",fontSize:"14px"}}>Ich melde mich innerhalb von 24h bei dir. 💪</p>
+              </div>
+            ) : (
+              <form
+                onSubmit={async(e)=>{
+                  e.preventDefault();
+                  setFormSending(true);
+                  try {
+                    const res = await fetch("https://formsubmit.co/ajax/ghaith.almadani.makkieh@gmail.com",{
+                      method:"POST",
+                      headers:{"Content-Type":"application/json","Accept":"application/json"},
+                      body:JSON.stringify({
+                        name: formData.name,
+                        email: formData.email,
+                        message: formData.message,
+                        _subject: `WebIT AI Anfrage von ${formData.name}`,
+                        _captcha: "false",
+                      })
+                    });
+                    if(res.ok){ setFormSent(true); }
+                  } catch(err){ setFormSent(true); }
+                  setFormSending(false);
+                }}
+                style={{display:"flex",flexDirection:"column",gap:"12px",textAlign:"left"}}>
+                <input
+                  required
+                  placeholder="Dein Name *"
+                  value={formData.name}
+                  onChange={e=>setFormData(d=>({...d,name:e.target.value}))}
+                  style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",padding:"13px 16px",color:"white",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}
+                  onFocus={e=>e.target.style.borderColor="rgba(139,92,246,0.4)"}
+                  onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.08)"}
+                />
+                <input
+                  required
+                  type="email"
+                  placeholder="Deine E-Mail *"
+                  value={formData.email}
+                  onChange={e=>setFormData(d=>({...d,email:e.target.value}))}
+                  style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",padding:"13px 16px",color:"white",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}
+                  onFocus={e=>e.target.style.borderColor="rgba(139,92,246,0.4)"}
+                  onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.08)"}
+                />
+                <textarea
+                  required
+                  placeholder="Was brauchst du? (Branche, Wünsche...) *"
+                  rows={4}
+                  value={formData.message}
+                  onChange={e=>setFormData(d=>({...d,message:e.target.value}))}
+                  style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",padding:"13px 16px",color:"white",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box",resize:"none",fontFamily:"inherit"}}
+                  onFocus={e=>e.target.style.borderColor="rgba(139,92,246,0.4)"}
+                  onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.08)"}
+                />
+                <button
+                  type="submit"
+                  disabled={formSending}
+                  style={{padding:"14px",background:"linear-gradient(135deg,#8b5cf6,#ef4444)",color:"white",fontWeight:"700",fontSize:"15px",borderRadius:"12px",border:"none",cursor:formSending?"not-allowed":"pointer",fontFamily:"inherit",opacity:formSending?0.7:1,transition:"all 0.3s",boxShadow:"0 8px 32px rgba(139,92,246,0.25)"}}>
+                  {formSending ? "Wird gesendet..." : "✉️ Anfrage absenden →"}
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </section>
