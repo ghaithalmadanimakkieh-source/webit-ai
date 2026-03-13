@@ -1,364 +1,304 @@
 // @ts-nocheck
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
-const PASSWORD = "webit2026";
+const PASSWORD = "Madani.09630";
 
-const DEFAULT_BOT_ANSWERS = [
-  { id: 1, trigger: "preis", answer: "💰 Unsere Pakete:\n\n🥉 Starter – 299€\nLanding Page, Mobile, SEO\n\n🥈 Business – 799€\nBis 6 Seiten, CMS, SEO\n\n🥇 Premium – 1.499€\nUnlimited, Shop, KI-Bot" },
-  { id: 2, trigger: "kontakt", answer: "📞 Ruf mich an: +49 176 85974436\n✉️ Oder schreib mir auf WhatsApp!\n\nIch antworte innerhalb von 24h." },
-  { id: 3, trigger: "dauer", answer: "⏱️ Starter: 3–5 Tage\nBusiness: 7–10 Tage\nPremium: 14–21 Tage\n\nSchnelle Lieferung garantiert!" },
-  { id: 4, trigger: "demo", answer: "🎨 Schau dir unsere Live-Demos an:\n\n• Fitness Studio\n• Restaurant\n• Friseur\n• Arztpraxis\n• Immobilien\n• Kanzlei\n• Online Shop\n• Bildung" },
-];
+const TABS = {
+  hero: {
+    label: "Hero",
+    fields: {
+      badge: { label: "Badge Text", type: "input", val: "KI-gestützte Web-Entwicklung · 2026" },
+      h1a: { label: "Überschrift Zeile 1", type: "input", val: "Gestern analog." },
+      h1b: { label: "Überschrift Zeile 2 (lila)", type: "input", val: "Heute digital." },
+      h2: { label: "Unterzeile", type: "input", val: "Morgen mit KI — weit vor der Konkurrenz." },
+      desc: { label: "Beschreibung", type: "textarea", val: "Wir bauen dir eine professionelle Webseite — automatisiert, modern, mit echter KI." },
+      cta1: { label: "Button 1", type: "input", val: "Live Demos" },
+      cta2: { label: "Button 2", type: "input", val: "Anfragen ✦" },
+    }
+  },
+  kontakt: {
+    label: "Kontakt",
+    fields: {
+      headline: { label: "Überschrift", type: "input", val: "Starte dein Projekt noch heute." },
+      desc: { label: "Beschreibungstext", type: "textarea", val: "Kostenlose Erstberatung — ich analysiere dein Business und zeige dir genau was du brauchst. Kein Risiko, keine versteckten Kosten." },
+      wa_sub: { label: "WhatsApp Untertitel", type: "input", val: "+49 176 85974436 · Antwort in 1 Stunde" },
+      mail_text: { label: "E-Mail Button Text", type: "input", val: "E-Mail — Gmail öffnen" },
+      phone: { label: "Telefonnummer", type: "input", val: "+49 176 85974436" },
+    }
+  },
+  preise: {
+    label: "Preise",
+    fields: {
+      t1_name: { label: "Paket 1 Name", type: "input", val: "Starter" },
+      t1_price: { label: "Paket 1 Preis (€)", type: "input", val: "299" },
+      t1_features: { label: "Paket 1 Features (eine pro Zeile)", type: "textarea", val: "1 Landing Page\nMobile-optimiert\nKontaktformular\nGoogle Maps\n14 Tage Support" },
+      t2_name: { label: "Paket 2 Name", type: "input", val: "Business" },
+      t2_price: { label: "Paket 2 Preis (€)", type: "input", val: "799" },
+      t2_features: { label: "Paket 2 Features", type: "textarea", val: "Bis 6 Seiten\nCMS System\nSEO Optimierung\nGoogle Analytics\n60 Tage Support" },
+      t3_name: { label: "Paket 3 Name", type: "input", val: "Premium" },
+      t3_price: { label: "Paket 3 Preis (€)", type: "input", val: "1.499" },
+      t3_features: { label: "Paket 3 Features", type: "textarea", val: "Unlimited Seiten\nOnline Shop\nKI-Chatbot\nSEO Full-Paket\n12 Monate Support" },
+    }
+  },
+  ueber: {
+    label: "Über mich",
+    fields: {
+      name: { label: "Name", type: "input", val: "Ghaith Almadani" },
+      job: { label: "Beruf", type: "input", val: "KFZ-Mechatroniker & Web-Entwickler" },
+      story: { label: "Geschichte", type: "textarea", val: "Was als Hobby begann, ist heute WebIT AI — eine Agentur die kleinen Betrieben in Deutschland hilft, endlich online sichtbar zu werden." },
+      location: { label: "Standort", type: "input", val: "Rosenberg, Baden-Württemberg" },
+      age: { label: "Alter", type: "input", val: "22" },
+    }
+  },
+  bot: {
+    label: "Bot",
+    fields: {
+      greeting: { label: "Begrüßungs-Nachricht", type: "textarea", val: "👋 Hallo! Ich bin der WebIT AI Assistent.\n\nFrag mich alles — Preise, Demos, KI-Features! 😊" },
+      preis: { label: "Antwort bei 'preis'", type: "textarea", val: "💰 Unsere Pakete:\n\n🥉 Starter – 299€\n🥈 Business – 799€\n🥇 Premium – 1.499€" },
+      kontakt: { label: "Antwort bei 'kontakt'", type: "textarea", val: "📞 +49 176 85974436\n✉️ ghaith.almadani.makkieh@gmail.com\n\nAntwort innerhalb von 24h!" },
+      dauer: { label: "Antwort bei 'dauer'", type: "textarea", val: "⏱️ Starter: 3–5 Tage\nBusiness: 7–10 Tage\nPremium: 14–21 Tage" },
+    }
+  },
+  seo: {
+    label: "SEO",
+    fields: {
+      title: { label: "Meta Title", type: "input", val: "WebIT AI – KI Webseiten für lokale Businesses" },
+      desc: { label: "Meta Description", type: "textarea", val: "WebIT AI aus Rosenberg erstellt moderne, KI-gestützte Webseiten für lokale Unternehmen in Baden-Württemberg. Ab 299€." },
+      keywords: { label: "Keywords", type: "textarea", val: "Webdesign Rosenberg, KI Webdesign, Webseite erstellen Baden-Württemberg" },
+    }
+  }
+};
 
-const STATS = [
-  { label: "Seitenaufrufe heute", value: "—", icon: "👁️", color: "#8b5cf6" },
-  { label: "Besucher gesamt", value: "—", icon: "👥", color: "#10b981" },
-  { label: "Anfragen", value: "—", icon: "✉️", color: "#f59e0b" },
-  { label: "Google Position", value: "—", icon: "🔍", color: "#ef4444" },
-];
-
-export default function AdminDashboard() {
+export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState("");
-  const [pwError, setPwError] = useState(false);
-  const [tab, setTab] = useState("dashboard");
-  const [bots, setBots] = useState(DEFAULT_BOT_ANSWERS);
-  const [editId, setEditId] = useState(null);
-  const [editTrigger, setEditTrigger] = useState("");
-  const [editAnswer, setEditAnswer] = useState("");
-  const [newTrigger, setNewTrigger] = useState("");
-  const [newAnswer, setNewAnswer] = useState("");
-  const [saved, setSaved] = useState(false);
-  const [seoChecks, setSeoChecks] = useState([
-    { label: "Sitemap (webit-ai.de/sitemap.xml)", done: true },
-    { label: "robots.txt vorhanden", done: true },
-    { label: "Meta Title gesetzt", done: true },
-    { label: "Meta Description gesetzt", done: true },
-    { label: "Google Search Console verbunden", done: true },
-    { label: "Google My Business aktiv", done: true },
-    { label: "Layout.tsx mit SEO Tags", done: true },
-    { label: "Geo-Tags (Rosenberg/BW)", done: true },
-    { label: "OpenGraph Tags", done: true },
-    { label: "Mobile optimiert", done: true },
+  const [pwErr, setPwErr] = useState(false);
+  const [tab, setTab] = useState("hero");
+  const [vals, setVals] = useState({});
+  const [aiMsgs, setAiMsgs] = useState([
+    { role: "bot", text: "👋 Hallo Ghaith! Ich bin Claude Sonnet 4.6.\n\nSag mir was du ändern möchtest — z.B. \"Schreib mir eine bessere Überschrift\" oder \"Mach die Beschreibung kürzer und krasser\"." }
   ]);
+  const [aiInp, setAiInp] = useState("");
+  const [aiLoading, setAiLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [activeField, setActiveField] = useState(null);
+  const msgsRef = useRef(null);
 
   useEffect(() => {
-    const stored = localStorage.getItem("webit_authed");
-    if (stored === "1") setAuthed(true);
-    const storedBots = localStorage.getItem("webit_bots");
-    if (storedBots) setBots(JSON.parse(storedBots));
+    if (sessionStorage.getItem("wa_adm") === "1") setAuthed(true);
   }, []);
+
+  useEffect(() => {
+    if (msgsRef.current) msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
+  }, [aiMsgs]);
 
   function login() {
     if (pw === PASSWORD) {
       setAuthed(true);
-      localStorage.setItem("webit_authed", "1");
-      setPwError(false);
+      sessionStorage.setItem("wa_adm", "1");
     } else {
-      setPwError(true);
+      setPwErr(true);
+      setTimeout(() => setPwErr(false), 2000);
     }
   }
 
-  function logout() {
-    setAuthed(false);
-    localStorage.removeItem("webit_authed");
+  function getVal(tabKey, fieldKey) {
+    return vals[tabKey]?.[fieldKey] ?? TABS[tabKey].fields[fieldKey].val;
   }
 
-  function saveBots(updated) {
-    setBots(updated);
-    localStorage.setItem("webit_bots", JSON.stringify(updated));
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+  function setVal(tabKey, fieldKey, value) {
+    setVals(v => ({ ...v, [tabKey]: { ...v[tabKey], [fieldKey]: value } }));
   }
 
-  function startEdit(bot) {
-    setEditId(bot.id);
-    setEditTrigger(bot.trigger);
-    setEditAnswer(bot.answer);
+  function copyAll() {
+    const cfg = TABS[tab];
+    let out = `// WebIT AI Admin — ${cfg.label}\n// Kopiere diese Werte in deine page.tsx\n\n`;
+    Object.entries(cfg.fields).forEach(([key, f]) => {
+      out += `// ${f.label}\n"${getVal(tab, key)}"\n\n`;
+    });
+    navigator.clipboard.writeText(out).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
   }
 
-  function saveEdit() {
-    const updated = bots.map(b => b.id === editId ? { ...b, trigger: editTrigger, answer: editAnswer } : b);
-    saveBots(updated);
-    setEditId(null);
+  async function sendAI() {
+    const text = aiInp.trim();
+    if (!text || aiLoading) return;
+    setAiInp("");
+    setAiMsgs(m => [...m, { role: "user", text }]);
+    setAiLoading(true);
+
+    const currentVals = Object.fromEntries(
+      Object.entries(TABS[tab].fields).map(([k, f]) => [f.label, getVal(tab, k)])
+    );
+
+    const sys = `Du bist ein Experte für deutsche Unternehmenswebseiten und hilfst Ghaith Almadani seine Webseite webit-ai.de zu verbessern. Er ist 22 Jahre alt, KFZ-Mechatroniker aus Rosenberg (Baden-Württemberg) und hat eine Webdesign-Agentur namens WebIT AI. Die Webseite richtet sich an lokale Unternehmen in BW. Du arbeitest gerade am Bereich "${TABS[tab].label}". Aktuelle Werte: ${JSON.stringify(currentVals)}. Antworte immer auf Deutsch, kurz und konkret. Wenn du Text vorschlägst, markiere ihn klar mit Anführungszeichen.`;
+
+    try {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: sys,
+          messages: [{ role: "user", content: text }]
+        })
+      });
+      const data = await res.json();
+      const reply = data.content?.[0]?.text || "Fehler beim Laden.";
+      setAiMsgs(m => [...m, { role: "bot", text: reply }]);
+    } catch {
+      setAiMsgs(m => [...m, { role: "bot", text: "❌ Verbindungsfehler. Versuche es nochmal." }]);
+    }
+    setAiLoading(false);
   }
 
-  function deleteBot(id) {
-    saveBots(bots.filter(b => b.id !== id));
-  }
-
-  function addBot() {
-    if (!newTrigger || !newAnswer) return;
-    const updated = [...bots, { id: Date.now(), trigger: newTrigger, answer: newAnswer }];
-    saveBots(updated);
-    setNewTrigger("");
-    setNewAnswer("");
-  }
+  const s = {
+    page: { minHeight: "100vh", background: "#07070f", color: "white", fontFamily: "'Segoe UI', system-ui, sans-serif", display: "flex", flexDirection: "column" },
+    topbar: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.07)", position: "sticky", top: 0, zIndex: 100, backdropFilter: "blur(20px)" },
+    logo: { display: "flex", alignItems: "center", gap: "10px", fontWeight: 700, fontSize: "15px" },
+    logoIcon: { width: "30px", height: "30px", background: "linear-gradient(135deg,#8b5cf6,#ef4444)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 900 },
+    badge: { background: "rgba(139,92,246,0.2)", border: "1px solid rgba(139,92,246,0.3)", color: "#c4b5fd", fontSize: "10px", fontWeight: 700, padding: "2px 8px", borderRadius: "100px", letterSpacing: "0.5px" },
+    tabBar: { display: "flex", gap: "4px", padding: "10px 20px", borderBottom: "1px solid rgba(255,255,255,0.06)", overflowX: "auto" },
+    body: { display: "flex", flex: 1, overflow: "hidden", height: "calc(100vh - 100px)" },
+    left: { width: "240px", borderRight: "1px solid rgba(255,255,255,0.06)", overflow: "auto", flexShrink: 0 },
+    center: { flex: 1, overflow: "auto", padding: "20px" },
+    right: { width: "320px", borderLeft: "1px solid rgba(255,255,255,0.06)", display: "flex", flexDirection: "column", flexShrink: 0 },
+    inp: { width: "100%", padding: "10px 12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "white", fontSize: "13px", fontFamily: "inherit", outline: "none", boxSizing: "border-box" },
+    ta: { width: "100%", padding: "10px 12px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "10px", color: "white", fontSize: "13px", fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box", minHeight: "80px" },
+  };
 
   if (!authed) return (
-    <div style={{ minHeight: "100vh", background: "#080810", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Segoe UI',sans-serif" }}>
-      <div style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "20px", padding: "48px 40px", maxWidth: "380px", width: "90%", textAlign: "center" }}>
-        <div style={{ fontSize: "48px", marginBottom: "16px" }}>🔐</div>
-        <h1 style={{ color: "white", fontSize: "24px", fontWeight: "900", marginBottom: "6px" }}>WebIT AI</h1>
-        <p style={{ color: "rgba(255,255,255,0.3)", marginBottom: "28px", fontSize: "14px" }}>Admin Dashboard</p>
+    <div style={{ ...s.page, alignItems: "center", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: "340px", padding: "0 24px" }}>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ ...s.logoIcon, width: "52px", height: "52px", fontSize: "22px", margin: "0 auto 16px", boxShadow: "0 8px 28px rgba(139,92,246,0.3)" }}>W</div>
+          <h1 style={{ fontSize: "20px", fontWeight: 900, letterSpacing: "-1px", margin: "0 0 4px" }}>WebIT AI Admin</h1>
+          <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "13px", margin: 0 }}>Privater Bereich · Nur für dich</p>
+        </div>
         <input
-          type="password"
-          placeholder="Passwort eingeben..."
-          value={pw}
-          onChange={e => setPw(e.target.value)}
-          onKeyDown={e => e.key === "Enter" && login()}
-          style={{ width: "100%", padding: "13px 16px", background: "rgba(255,255,255,0.05)", border: `1px solid ${pwError ? "#ef4444" : "rgba(255,255,255,0.1)"}`, borderRadius: "10px", color: "white", fontSize: "14px", outline: "none", boxSizing: "border-box", marginBottom: "12px" }}
+          type="password" placeholder="Passwort..." value={pw}
+          onChange={e => setPw(e.target.value)} onKeyDown={e => e.key === "Enter" && login()}
+          style={{ ...s.inp, padding: "13px 16px", fontSize: "14px", marginBottom: "10px", borderColor: pwErr ? "#ef4444" : "rgba(255,255,255,0.1)" }}
         />
-        {pwError && <p style={{ color: "#ef4444", fontSize: "13px", marginBottom: "12px" }}>❌ Falsches Passwort</p>}
-        <button onClick={login} style={{ width: "100%", padding: "13px", background: "linear-gradient(135deg,#8b5cf6,#ef4444)", color: "white", fontWeight: "700", fontSize: "15px", borderRadius: "10px", border: "none", cursor: "pointer" }}>
+        {pwErr && <p style={{ color: "#ef4444", fontSize: "13px", textAlign: "center", marginBottom: "8px" }}>Falsches Passwort</p>}
+        <button onClick={login} style={{ width: "100%", padding: "13px", background: "linear-gradient(135deg,#8b5cf6,#ef4444)", color: "white", fontWeight: 800, fontSize: "14px", borderRadius: "12px", border: "none", cursor: "pointer" }}>
           Einloggen →
         </button>
-        <p style={{ color: "rgba(255,255,255,0.15)", fontSize: "12px", marginTop: "16px" }}>
-          <a href="/" style={{ color: "rgba(255,255,255,0.2)", textDecoration: "none" }}>← Zurück zur Webseite</a>
+        <p style={{ textAlign: "center", marginTop: "18px" }}>
+          <a href="/" style={{ color: "rgba(255,255,255,0.2)", fontSize: "12px", textDecoration: "none" }}>← Zurück zur Webseite</a>
         </p>
       </div>
     </div>
   );
 
-  const TABS = [
-    { id: "dashboard", label: "📊 Dashboard", },
-    { id: "bots", label: "🤖 KI Bot", },
-    { id: "seo", label: "🔍 SEO", },
-    { id: "links", label: "🔗 Quick Links", },
-  ];
-
   return (
-    <div style={{ minHeight: "100vh", background: "#080810", fontFamily: "'Segoe UI',sans-serif", color: "white" }}>
-      <style>{`
-        .admin-input{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px 14px;color:white;font-size:13px;outline:none;width:100%;box-sizing:border-box;font-family:inherit}
-        .admin-input:focus{border-color:rgba(139,92,246,0.5)}
-        .admin-btn{padding:9px 18px;background:linear-gradient(135deg,#8b5cf6,#ef4444);color:white;font-weight:700;font-size:13px;border:none;border-radius:8px;cursor:pointer;font-family:inherit}
-        .admin-card{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:24px}
-        @media(max-width:768px){.admin-grid{grid-template-columns:1fr 1fr!important}.admin-tabs{flex-wrap:wrap;gap:6px!important}}
-      `}</style>
-
-      {/* TOP NAV */}
-      <div style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid rgba(255,255,255,0.06)", padding: "14px 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <div style={{ width: "32px", height: "32px", background: "linear-gradient(135deg,#8b5cf6,#ef4444)", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px" }}>W</div>
-          <div>
-            <div style={{ fontWeight: "800", fontSize: "15px" }}>WebIT AI Admin</div>
-            <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.3)" }}>webit-ai.de</div>
-          </div>
+    <div style={s.page}>
+      {/* TOPBAR */}
+      <div style={s.topbar}>
+        <div style={s.logo}>
+          <div style={s.logoIcon}>W</div>
+          WebIT AI Admin
+          <span style={s.badge}>Claude Sonnet 4.6</span>
         </div>
-        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-          <a href="/" target="_blank" style={{ padding: "8px 14px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "white", textDecoration: "none", fontSize: "12px" }}>🌐 Webseite</a>
-          <button onClick={logout} style={{ padding: "8px 14px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "8px", color: "#ef4444", fontSize: "12px", cursor: "pointer", fontFamily: "inherit" }}>Logout</button>
+        <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+          <a href="https://webit-ai.de" target="_blank" style={{ padding: "6px 14px", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "8px", color: "rgba(255,255,255,0.5)", textDecoration: "none", fontSize: "12px" }}>🌐 Live Seite</a>
+          <button onClick={() => { setAuthed(false); sessionStorage.removeItem("wa_adm"); }} style={{ padding: "6px 14px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "8px", color: "#f87171", cursor: "pointer", fontSize: "12px", fontFamily: "inherit" }}>Logout</button>
         </div>
       </div>
 
       {/* TABS */}
-      <div className="admin-tabs" style={{ display: "flex", gap: "8px", padding: "16px 24px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        {TABS.map(t => (
-          <button key={t.id} onClick={() => setTab(t.id)} style={{ padding: "9px 18px", borderRadius: "10px", background: tab === t.id ? "linear-gradient(135deg,#8b5cf6,#ef4444)" : "rgba(255,255,255,0.04)", border: `1px solid ${tab === t.id ? "transparent" : "rgba(255,255,255,0.07)"}`, color: "white", fontWeight: tab === t.id ? "700" : "500", fontSize: "13px", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }}>{t.label}</button>
+      <div style={s.tabBar}>
+        {Object.entries(TABS).map(([key, cfg]) => (
+          <button key={key} onClick={() => { setTab(key); setActiveField(null); }}
+            style={{ padding: "7px 18px", borderRadius: "9px", fontSize: "13px", fontWeight: 600, cursor: "pointer", border: "1px solid", fontFamily: "inherit", whiteSpace: "nowrap", transition: "all 0.2s", background: tab === key ? "linear-gradient(135deg,#8b5cf6,#ef4444)" : "rgba(255,255,255,0.03)", color: tab === key ? "white" : "rgba(255,255,255,0.4)", borderColor: tab === key ? "transparent" : "rgba(255,255,255,0.08)" }}>
+            {cfg.label}
+          </button>
         ))}
       </div>
 
-      <div style={{ padding: "24px", maxWidth: "1000px", margin: "0 auto" }}>
+      {/* BODY */}
+      <div style={s.body}>
 
-        {/* DASHBOARD TAB */}
-        {tab === "dashboard" && (
-          <div>
-            <h2 style={{ fontSize: "22px", fontWeight: "800", marginBottom: "20px" }}>Übersicht</h2>
-
-            {/* STATS */}
-            <div className="admin-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: "12px", marginBottom: "24px" }}>
-              {STATS.map((s, i) => (
-                <div key={i} className="admin-card" style={{ textAlign: "center" }}>
-                  <div style={{ fontSize: "28px", marginBottom: "8px" }}>{s.icon}</div>
-                  <div style={{ fontSize: "26px", fontWeight: "900", color: s.color, marginBottom: "4px" }}>{s.value}</div>
-                  <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)" }}>{s.label}</div>
-                </div>
-              ))}
+        {/* LEFT — FIELD LIST */}
+        <div style={s.left}>
+          <div style={{ padding: "14px 14px 8px", fontSize: "10px", color: "rgba(255,255,255,0.3)", fontWeight: 700, letterSpacing: "1.5px", textTransform: "uppercase" }}>Felder</div>
+          {Object.entries(TABS[tab].fields).map(([key, f]) => (
+            <div key={key}
+              onClick={() => { setActiveField(key); document.getElementById("fg-" + key)?.scrollIntoView({ behavior: "smooth", block: "start" }); }}
+              style={{ padding: "9px 14px", margin: "2px 8px", borderRadius: "8px", cursor: "pointer", fontSize: "13px", color: activeField === key ? "white" : "rgba(255,255,255,0.45)", background: activeField === key ? "rgba(139,92,246,0.15)" : "transparent", border: `1px solid ${activeField === key ? "rgba(139,92,246,0.25)" : "transparent"}`, transition: "all 0.15s" }}>
+              {f.label}
             </div>
-
-            {/* VERCEL ANALYTICS INFO */}
-            <div className="admin-card" style={{ marginBottom: "16px", border: "1px solid rgba(139,92,246,0.2)" }}>
-              <h3 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "12px" }}>📈 Live Besucher — Vercel Analytics</h3>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", lineHeight: "1.7", marginBottom: "16px" }}>
-                Für echte Live-Statistiken → Vercel Dashboard aktivieren:
-              </p>
-              <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-                <a href="https://vercel.com/dashboard" target="_blank" style={{ padding: "9px 18px", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", color: "white", textDecoration: "none", fontSize: "13px" }}>→ Vercel Dashboard öffnen</a>
-                <a href="https://vercel.com/docs/analytics" target="_blank" style={{ padding: "9px 18px", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: "8px", color: "#c4b5fd", textDecoration: "none", fontSize: "13px" }}>→ Analytics einrichten</a>
-              </div>
-            </div>
-
-            {/* STATUS */}
-            <div className="admin-card">
-              <h3 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "14px" }}>🟢 System Status</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {[
-                  { label: "Webseite webit-ai.de", status: "Online", color: "#10b981" },
-                  { label: "Vercel Deployment", status: "Aktiv", color: "#10b981" },
-                  { label: "Google Search Console", status: "Verbunden", color: "#10b981" },
-                  { label: "Google My Business", status: "Aktiv", color: "#10b981" },
-                  { label: "Kontaktformular", status: "Aktiv", color: "#10b981" },
-                  { label: "WhatsApp Button", status: "Aktiv", color: "#10b981" },
-                ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
-                    <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.6)" }}>{item.label}</span>
-                    <span style={{ fontSize: "12px", fontWeight: "700", color: item.color, background: item.color + "15", padding: "3px 10px", borderRadius: "100px" }}>● {item.status}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+          ))}
+          <div style={{ padding: "14px", marginTop: "auto" }}>
+            <button onClick={copyAll} style={{ width: "100%", padding: "10px", background: copied ? "rgba(16,185,129,0.2)" : "linear-gradient(135deg,#8b5cf6,#ef4444)", color: copied ? "#34d399" : "white", fontWeight: 700, fontSize: "13px", borderRadius: "10px", border: "none", cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }}>
+              {copied ? "✓ Kopiert!" : "Kopieren für VS Code"}
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* BOT TAB */}
-        {tab === "bots" && (
-          <div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px", flexWrap: "wrap", gap: "10px" }}>
-              <h2 style={{ fontSize: "22px", fontWeight: "800" }}>🤖 KI Bot Antworten</h2>
-              {saved && <span style={{ color: "#10b981", fontWeight: "700", fontSize: "13px" }}>✓ Gespeichert!</span>}
-            </div>
-            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "20px", lineHeight: "1.6" }}>
-              Wenn ein Besucher ein <strong style={{ color: "white" }}>Trigger-Wort</strong> eingibt, antwortet der Bot automatisch mit deiner Antwort.
-            </p>
-
-            {/* BOT LIST */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "28px" }}>
-              {bots.map(bot => (
-                <div key={bot.id} className="admin-card">
-                  {editId === bot.id ? (
-                    <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                      <div>
-                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", marginBottom: "4px", display: "block" }}>TRIGGER WORT</label>
-                        <input className="admin-input" value={editTrigger} onChange={e => setEditTrigger(e.target.value)} />
-                      </div>
-                      <div>
-                        <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", marginBottom: "4px", display: "block" }}>ANTWORT</label>
-                        <textarea className="admin-input" rows={4} value={editAnswer} onChange={e => setEditAnswer(e.target.value)} style={{ resize: "vertical" }} />
-                      </div>
-                      <div style={{ display: "flex", gap: "8px" }}>
-                        <button onClick={saveEdit} className="admin-btn">✓ Speichern</button>
-                        <button onClick={() => setEditId(null)} style={{ padding: "9px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontFamily: "inherit", fontSize: "13px" }}>Abbrechen</button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px" }}>
-                      <div style={{ flex: 1 }}>
-                        <div style={{ display: "inline-block", padding: "3px 10px", background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.25)", borderRadius: "100px", fontSize: "11px", color: "#c4b5fd", fontWeight: "700", marginBottom: "8px" }}>
-                          Trigger: "{bot.trigger}"
-                        </div>
-                        <div style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)", lineHeight: "1.5", whiteSpace: "pre-line" }}>{bot.answer.substring(0, 100)}{bot.answer.length > 100 ? "..." : ""}</div>
-                      </div>
-                      <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
-                        <button onClick={() => startEdit(bot)} style={{ padding: "7px 12px", background: "rgba(139,92,246,0.1)", border: "1px solid rgba(139,92,246,0.2)", borderRadius: "7px", color: "#c4b5fd", cursor: "pointer", fontSize: "12px", fontFamily: "inherit" }}>✏️ Edit</button>
-                        <button onClick={() => deleteBot(bot.id)} style={{ padding: "7px 12px", background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "7px", color: "#ef4444", cursor: "pointer", fontSize: "12px", fontFamily: "inherit" }}>🗑️</button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-
-            {/* ADD NEW */}
-            <div className="admin-card" style={{ border: "1px solid rgba(16,185,129,0.2)" }}>
-              <h3 style={{ fontSize: "15px", fontWeight: "700", marginBottom: "14px", color: "#10b981" }}>➕ Neue Bot-Antwort hinzufügen</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div>
-                  <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", marginBottom: "4px", display: "block" }}>TRIGGER WORT (z.B. "garantie", "rabatt", "portfolio")</label>
-                  <input className="admin-input" placeholder="Trigger-Wort eingeben..." value={newTrigger} onChange={e => setNewTrigger(e.target.value)} />
-                </div>
-                <div>
-                  <label style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", marginBottom: "4px", display: "block" }}>BOT ANTWORT</label>
-                  <textarea className="admin-input" rows={3} placeholder="Bot-Antwort eingeben..." value={newAnswer} onChange={e => setNewAnswer(e.target.value)} style={{ resize: "vertical" }} />
-                </div>
-                <button onClick={addBot} className="admin-btn" style={{ alignSelf: "flex-start" }}>➕ Hinzufügen</button>
-              </div>
-            </div>
+        {/* CENTER — EDITOR */}
+        <div style={s.center}>
+          <div style={{ marginBottom: "20px" }}>
+            <h2 style={{ fontSize: "16px", fontWeight: 800, margin: "0 0 4px" }}>{TABS[tab].label} bearbeiten</h2>
+            <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", margin: 0 }}>Ändere die Felder → Kopieren → in VS Code einfügen → pushen</p>
           </div>
-        )}
-
-        {/* SEO TAB */}
-        {tab === "seo" && (
-          <div>
-            <h2 style={{ fontSize: "22px", fontWeight: "800", marginBottom: "8px" }}>🔍 SEO Status</h2>
-            <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "13px", marginBottom: "20px" }}>Alle SEO-Optimierungen für webit-ai.de</p>
-
-            {/* SEO SCORE */}
-            <div className="admin-card" style={{ textAlign: "center", marginBottom: "20px", border: "1px solid rgba(16,185,129,0.2)" }}>
-              <div style={{ fontSize: "56px", fontWeight: "900", color: "#10b981", marginBottom: "6px" }}>
-                {seoChecks.filter(s => s.done).length}/{seoChecks.length}
-              </div>
-              <div style={{ fontSize: "14px", color: "rgba(255,255,255,0.4)" }}>SEO Checks erfüllt</div>
-              <div style={{ marginTop: "12px", height: "8px", background: "rgba(255,255,255,0.06)", borderRadius: "100px", overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${(seoChecks.filter(s => s.done).length / seoChecks.length) * 100}%`, background: "linear-gradient(90deg,#10b981,#8b5cf6)", borderRadius: "100px", transition: "width 0.5s" }} />
-              </div>
+          {Object.entries(TABS[tab].fields).map(([key, f]) => (
+            <div key={key} id={"fg-" + key} style={{ marginBottom: "18px", padding: "14px 16px", background: "rgba(255,255,255,0.02)", border: `1px solid ${activeField === key ? "rgba(139,92,246,0.3)" : "rgba(255,255,255,0.06)"}`, borderRadius: "12px", transition: "border 0.2s" }}
+              onClick={() => setActiveField(key)}>
+              <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.35)", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase", marginBottom: "8px" }}>{f.label}</div>
+              {f.type === "textarea" ? (
+                <textarea style={s.ta} value={getVal(tab, key)} rows={4}
+                  onChange={e => setVal(tab, key, e.target.value)}
+                  onFocus={e => { e.target.style.borderColor = "rgba(139,92,246,0.5)"; setActiveField(key); }}
+                  onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.1)"} />
+              ) : (
+                <input style={s.inp} value={getVal(tab, key)}
+                  onChange={e => setVal(tab, key, e.target.value)}
+                  onFocus={e => { e.target.style.borderColor = "rgba(139,92,246,0.5)"; setActiveField(key); }}
+                  onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.1)"} />
+              )}
             </div>
+          ))}
+        </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px", marginBottom: "24px" }}>
-              {seoChecks.map((check, i) => (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", background: "rgba(255,255,255,0.02)", borderRadius: "10px", border: `1px solid ${check.done ? "rgba(16,185,129,0.15)" : "rgba(239,68,68,0.15)"}` }}>
-                  <span style={{ fontSize: "16px" }}>{check.done ? "✅" : "❌"}</span>
-                  <span style={{ fontSize: "13px", color: check.done ? "rgba(255,255,255,0.7)" : "rgba(255,255,255,0.35)" }}>{check.label}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* TIPS */}
-            <div className="admin-card" style={{ border: "1px solid rgba(139,92,246,0.2)" }}>
-              <h3 style={{ fontSize: "15px", fontWeight: "700", marginBottom: "14px" }}>💡 Nächste SEO Schritte</h3>
-              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                {[
-                  { tip: "Erstelle erste Blogbeiträge (z.B. 'Webdesign Tipps für Friseure')", priority: "Hoch" },
-                  { tip: "Sammle 5 Google Bewertungen von Bekannten", priority: "Hoch" },
-                  { tip: "Poste wöchentlich auf Google My Business", priority: "Mittel" },
-                  { tip: "Baue Backlinks auf (Einträge in Branchenbücher)", priority: "Mittel" },
-                  { tip: "Füge mehr Seiten hinzu (Blog, Portfolio)", priority: "Niedrig" },
-                ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", gap: "12px", alignItems: "flex-start", padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: "8px" }}>
-                    <span style={{ fontSize: "11px", fontWeight: "700", padding: "2px 8px", borderRadius: "100px", background: item.priority === "Hoch" ? "rgba(239,68,68,0.15)" : item.priority === "Mittel" ? "rgba(245,158,11,0.15)" : "rgba(255,255,255,0.08)", color: item.priority === "Hoch" ? "#ef4444" : item.priority === "Mittel" ? "#f59e0b" : "rgba(255,255,255,0.4)", flexShrink: 0, marginTop: "1px" }}>{item.priority}</span>
-                    <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.55)", lineHeight: "1.5" }}>{item.tip}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
+        {/* RIGHT — CLAUDE CHAT */}
+        <div style={s.right}>
+          <div style={{ padding: "12px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#10b981", boxShadow: "0 0 6px #10b981" }} />
+            <span style={{ fontSize: "13px", fontWeight: 700 }}>Claude Sonnet 4.6</span>
+            <span style={{ fontSize: "11px", color: "rgba(255,255,255,0.3)", marginLeft: "auto" }}>KI Assistent</span>
           </div>
-        )}
 
-        {/* LINKS TAB */}
-        {tab === "links" && (
-          <div>
-            <h2 style={{ fontSize: "22px", fontWeight: "800", marginBottom: "20px" }}>🔗 Quick Links</h2>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: "12px" }}>
-              {[
-                { label: "Webseite live", url: "https://webit-ai.de", icon: "🌐", color: "#8b5cf6" },
-                { label: "Vercel Dashboard", url: "https://vercel.com/dashboard", icon: "▲", color: "#ffffff" },
-                { label: "GitHub Repository", url: "https://github.com/ghaithmadanimakkieh-source/webit-ai", icon: "🐙", color: "#64748b" },
-                { label: "Google Search Console", url: "https://search.google.com/search-console", icon: "🔍", color: "#10b981" },
-                { label: "Google My Business", url: "https://business.google.com", icon: "📍", color: "#f59e0b" },
-                { label: "Sitemap", url: "https://webit-ai.de/sitemap.xml", icon: "🗺️", color: "#06b6d4" },
-                { label: "FormSubmit Inbox", url: "https://formsubmit.co/", icon: "✉️", color: "#ec4899" },
-                { label: "WhatsApp öffnen", url: "https://wa.me/4917685974436", icon: "💬", color: "#25d366" },
-                { label: "Demo Fitness", url: "https://webit-ai.de/demo/fitness", icon: "🏋️", color: "#ef4444" },
-                { label: "Demo Restaurant", url: "https://webit-ai.de/demo/restaurant", icon: "🍝", color: "#d4af37" },
-                { label: "Demo Friseur", url: "https://webit-ai.de/demo/friseur", icon: "✂️", color: "#8b5cf6" },
-                { label: "Demo Arztpraxis", url: "https://webit-ai.de/demo/arztpraxis", icon: "🏥", color: "#0284c7" },
-              ].map((link, i) => (
-                <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
-                  style={{ display: "flex", alignItems: "center", gap: "12px", padding: "16px", background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "12px", textDecoration: "none", color: "white", transition: "all 0.2s" }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)" }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.02)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.06)" }}>
-                  <div style={{ width: "36px", height: "36px", background: link.color + "18", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "18px", flexShrink: 0 }}>{link.icon}</div>
-                  <div>
-                    <div style={{ fontSize: "13px", fontWeight: "600" }}>{link.label}</div>
-                    <div style={{ fontSize: "10px", color: "rgba(255,255,255,0.2)", marginTop: "2px" }}>{link.url.replace("https://", "").substring(0, 30)}</div>
-                  </div>
-                </a>
-              ))}
-            </div>
+          <div ref={msgsRef} style={{ flex: 1, overflowY: "auto", padding: "14px", display: "flex", flexDirection: "column", gap: "10px" }}>
+            {aiMsgs.map((m, i) => (
+              <div key={i} style={{ padding: "10px 12px", borderRadius: "12px", fontSize: "13px", lineHeight: "1.6", maxWidth: "92%", whiteSpace: "pre-wrap", alignSelf: m.role === "user" ? "flex-end" : "flex-start", background: m.role === "user" ? "linear-gradient(135deg,#8b5cf6,#7c3aed)" : "rgba(255,255,255,0.06)", color: "white", border: m.role === "bot" ? "1px solid rgba(255,255,255,0.08)" : "none" }}>
+                {m.text}
+              </div>
+            ))}
+            {aiLoading && (
+              <div style={{ padding: "10px 12px", borderRadius: "12px", fontSize: "13px", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.08)", alignSelf: "flex-start", color: "rgba(255,255,255,0.5)" }}>
+                Claude schreibt...
+              </div>
+            )}
           </div>
-        )}
 
+          <div style={{ padding: "12px", borderTop: "1px solid rgba(255,255,255,0.06)", display: "flex", gap: "8px" }}>
+            <input
+              value={aiInp} onChange={e => setAiInp(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && !e.shiftKey && sendAI()}
+              placeholder="Frag Claude..." disabled={aiLoading}
+              style={{ ...s.inp, flex: 1 }}
+            />
+            <button onClick={sendAI} disabled={aiLoading || !aiInp.trim()}
+              style={{ padding: "10px 14px", background: aiLoading ? "rgba(139,92,246,0.3)" : "linear-gradient(135deg,#8b5cf6,#ef4444)", color: "white", border: "none", borderRadius: "10px", cursor: aiLoading ? "not-allowed" : "pointer", fontSize: "13px", fontFamily: "inherit", fontWeight: 700, whiteSpace: "nowrap" }}>
+              →
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
