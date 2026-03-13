@@ -768,108 +768,127 @@ export default function Home() {
       </section>
 
       {/* ══ KONTAKT ══ */}
-      <section id="kontakt" style={{padding:pad,maxWidth:"640px",margin:"0 auto",textAlign:"center",position:"relative",zIndex:1}}>
-        <div style={{padding:isMobile?"28px 18px":"52px",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"24px",backdropFilter:"blur(24px)",position:"relative",overflow:"hidden"}}>
-          <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 50% 0%,rgba(139,92,246,0.07),transparent 60%)",pointerEvents:"none"}}/>
-          <div style={{position:"relative",zIndex:1}}>
-            <div style={{display:"flex",justifyContent:"center",marginBottom:"12px"}}><WLogo size={40}/></div>
-            <p style={{color:"#8b5cf6",fontSize:"11px",fontWeight:"700",letterSpacing:"3px",textTransform:"uppercase",marginBottom:"10px"}}>Starte jetzt</p>
-            <h2 style={{fontSize:isMobile?"clamp(22px,7vw,32px)":"clamp(24px,4vw,40px)",fontWeight:"900",letterSpacing:"-2px",marginBottom:"10px"}}>
-              Deine digitale Zukunft<br/>
-              <span style={{background:"linear-gradient(135deg,#8b5cf6,#ef4444)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>beginnt heute.</span>
-            </h2>
-            <p style={{color:"rgba(255,255,255,0.3)",lineHeight:"1.7",marginBottom:"24px",fontSize:"14px"}}>Kostenlose Erstberatung · Kein Risiko · Antwort in 24h</p>
+      <section id="kontakt" style={{padding:pad,maxWidth:"700px",margin:"0 auto",position:"relative",zIndex:1}}>
+        <style>{`
+          @keyframes borderGlow{0%,100%{opacity:0.5}50%{opacity:1}}
+          @keyframes pulseRing{0%{transform:scale(1);opacity:0.6}100%{transform:scale(1.5);opacity:0}}
+          @keyframes floatUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+          .kontakt-btn{transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)!important}
+          .kontakt-btn:hover{transform:translateY(-4px) scale(1.02)!important}
+          .kontakt-btn:active{transform:scale(0.97)!important}
+        `}</style>
 
-            {/* WHATSAPP + CALL BUTTONS */}
-            <div style={{display:"flex",gap:"10px",justifyContent:"center",marginBottom:"24px",flexWrap:"wrap"}}>
-              <a href="https://wa.me/4917685974436?text=Hallo%20Ghaith!%20Ich%20interessiere%20mich%20f%C3%BCr%20eine%20Webseite%20von%20WebIT%20AI."
+        {/* GLOW LINES TOP */}
+        <div style={{position:"relative",marginBottom:"0"}}>
+          <div style={{position:"absolute",top:0,left:"10%",right:"10%",height:"1px",background:"linear-gradient(90deg,transparent,rgba(139,92,246,0.6),rgba(239,68,68,0.6),transparent)",animation:"borderGlow 3s ease-in-out infinite"}}/>
+        </div>
+
+        <div style={{padding:isMobile?"36px 20px 40px":"64px 56px",background:"linear-gradient(145deg,rgba(15,10,30,0.95),rgba(8,5,18,0.98))",border:"1px solid rgba(139,92,246,0.15)",borderRadius:"32px",backdropFilter:"blur(40px)",position:"relative",overflow:"hidden",boxShadow:"0 40px 120px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05)"}}>
+
+          {/* BG ORBS */}
+          <div style={{position:"absolute",top:"-80px",left:"-80px",width:"300px",height:"300px",background:"radial-gradient(circle,rgba(139,92,246,0.08),transparent 70%)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",bottom:"-80px",right:"-80px",width:"300px",height:"300px",background:"radial-gradient(circle,rgba(239,68,68,0.06),transparent 70%)",pointerEvents:"none"}}/>
+          <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",width:"500px",height:"500px",background:"radial-gradient(circle,rgba(139,92,246,0.03),transparent 65%)",pointerEvents:"none"}}/>
+
+          <div style={{position:"relative",zIndex:1,textAlign:"center"}}>
+
+            {/* LIVE BADGE */}
+            <div style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"6px 18px",borderRadius:"100px",background:"rgba(16,185,129,0.08)",border:"1px solid rgba(16,185,129,0.2)",fontSize:"11px",color:"#34d399",fontWeight:"700",letterSpacing:"2px",textTransform:"uppercase",marginBottom:"24px"}}>
+              <span style={{width:"6px",height:"6px",background:"#10b981",borderRadius:"50%",display:"inline-block",boxShadow:"0 0 8px #10b981",animation:"pulseRing 1.5s ease-out infinite"}}/>
+              JETZT VERFÜGBAR
+            </div>
+
+            {/* HEADLINE */}
+            <h2 style={{fontSize:isMobile?"clamp(28px,9vw,42px)":"clamp(32px,5vw,58px)",fontWeight:"900",letterSpacing:"-3px",lineHeight:"1.0",marginBottom:"16px",textAlign:"center"}}>
+              Starte dein Projekt<br/>
+              <span style={{background:"linear-gradient(135deg,#a78bfa 0%,#f472b6 50%,#ef4444 100%)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>noch heute.</span>
+            </h2>
+            <p style={{color:"rgba(255,255,255,0.4)",lineHeight:"1.8",fontSize:isMobile?"14px":"16px",maxWidth:"500px",margin:"0 auto 40px"}}>
+              Kostenlose Erstberatung — ich analysiere dein Business und zeige dir <strong style={{color:"rgba(255,255,255,0.75)"}}>genau was du brauchst.</strong> Kein Risiko, keine versteckten Kosten.
+            </p>
+
+            {/* CONTACT CARDS */}
+            <div style={{display:"flex",flexDirection:"column",gap:"10px",maxWidth:"480px",margin:"0 auto 36px"}}>
+
+              {/* WHATSAPP — PRIMÄR */}
+              <a className="kontakt-btn"
+                href="https://wa.me/4917685974436?text=Hallo%20Ghaith!%20Ich%20interessiere%20mich%20f%C3%BCr%20eine%20Webseite%20von%20WebIT%20AI.%20K%C3%B6nnen%20wir%20das%20kurz%20besprechen%3F"
                 target="_blank" rel="noopener noreferrer"
-                style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"12px 22px",borderRadius:"12px",background:"linear-gradient(135deg,#25d366,#128c7e)",color:"white",fontWeight:"700",fontSize:"14px",textDecoration:"none",boxShadow:"0 6px 24px rgba(37,211,102,0.3)",transition:"all 0.3s"}}
-                onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 12px 36px rgba(37,211,102,0.4)"}}
-                onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow="0 6px 24px rgba(37,211,102,0.3)"}}>
-                💬 WhatsApp schreiben
+                style={{display:"flex",alignItems:"center",gap:"16px",padding:"18px 22px",borderRadius:"16px",background:"linear-gradient(135deg,#25d366 0%,#1da851 100%)",color:"white",textDecoration:"none",boxShadow:"0 8px 32px rgba(37,211,102,0.3), inset 0 1px 0 rgba(255,255,255,0.2)",position:"relative",overflow:"hidden",textAlign:"left"}}>
+                <div style={{position:"absolute",top:0,right:0,width:"120px",height:"100%",background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.05))",pointerEvents:"none"}}/>
+                <div style={{width:"48px",height:"48px",background:"rgba(255,255,255,0.2)",borderRadius:"12px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px",flexShrink:0,boxShadow:"0 4px 12px rgba(0,0,0,0.2)"}}>💬</div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:"16px",fontWeight:"800",letterSpacing:"-0.3px"}}>WhatsApp — Sofort schreiben</div>
+                  <div style={{fontSize:"12px",opacity:0.75,marginTop:"3px",fontWeight:"500"}}>+49 176 85974436 · Ø Antwort in 1 Stunde</div>
+                </div>
+                <div style={{fontSize:"20px",opacity:0.8,flexShrink:0}}>↗</div>
               </a>
-              <a href="tel:+4917685974436"
-                style={{display:"inline-flex",alignItems:"center",gap:"8px",padding:"12px 22px",borderRadius:"12px",background:"rgba(255,255,255,0.05)",border:"1px solid rgba(255,255,255,0.1)",color:"white",fontWeight:"600",fontSize:"14px",textDecoration:"none",transition:"all 0.3s"}}
-                onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.09)"}
-                onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.05)"}>
-                📞 Anrufen
+
+              {/* EMAIL — GMAIL */}
+              <a className="kontakt-btn"
+                href="https://mail.google.com/mail/?view=cm&to=ghaith.almadani.makkieh@gmail.com&su=Webseiten-Anfrage%20%7C%20WebIT%20AI&body=Hallo%20Ghaith%2C%0A%0Aich%20habe%20deine%20Webseite%20webit-ai.de%20besucht%20und%20interessiere%20mich%20f%C3%BCr%20eine%20professionelle%20Webseite.%0A%0AMeine%20Branche%3A%20%0AMein%20Budget%3A%20%0AMeine%20W%C3%BCnsche%3A%20%0A%0AMit%20freundlichen%20Gr%C3%BC%C3%9Fen"
+                target="_blank" rel="noopener noreferrer"
+                style={{display:"flex",alignItems:"center",gap:"16px",padding:"18px 22px",borderRadius:"16px",background:"linear-gradient(135deg,#ea4335 0%,#b31412 100%)",color:"white",textDecoration:"none",boxShadow:"0 8px 32px rgba(234,67,53,0.25), inset 0 1px 0 rgba(255,255,255,0.15)",position:"relative",overflow:"hidden",textAlign:"left"}}>
+                <div style={{position:"absolute",top:0,right:0,width:"120px",height:"100%",background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.05))",pointerEvents:"none"}}/>
+                <div style={{width:"48px",height:"48px",background:"rgba(255,255,255,0.2)",borderRadius:"12px",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,boxShadow:"0 4px 12px rgba(0,0,0,0.2)"}}>
+                  <svg width="26" height="20" viewBox="0 0 26 20" fill="none"><rect width="26" height="20" rx="3" fill="white" fillOpacity="0.15"/><path d="M1 1L13 11L25 1" stroke="white" strokeWidth="2" strokeLinecap="round"/><path d="M1 1H25V19H1V1Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:"16px",fontWeight:"800",letterSpacing:"-0.3px"}}>E-Mail — Gmail öffnen</div>
+                  <div style={{fontSize:"12px",opacity:0.75,marginTop:"3px",fontWeight:"500"}}>ghaith.almadani.makkieh@gmail.com</div>
+                </div>
+                <div style={{fontSize:"20px",opacity:0.8,flexShrink:0}}>↗</div>
               </a>
+
+              {/* PHONE */}
+              <a className="kontakt-btn"
+                href="tel:+4917685974436"
+                style={{display:"flex",alignItems:"center",gap:"16px",padding:"18px 22px",borderRadius:"16px",background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",color:"white",textDecoration:"none",boxShadow:"0 4px 20px rgba(0,0,0,0.3)",textAlign:"left"}}>
+                <div style={{width:"48px",height:"48px",background:"rgba(139,92,246,0.2)",borderRadius:"12px",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px",flexShrink:0,border:"1px solid rgba(139,92,246,0.3)"}}>📞</div>
+                <div style={{flex:1}}>
+                  <div style={{fontSize:"16px",fontWeight:"800",letterSpacing:"-0.3px"}}>Anrufen — Direkt sprechen</div>
+                  <div style={{fontSize:"12px",color:"rgba(255,255,255,0.4)",marginTop:"3px",fontWeight:"500"}}>+49 176 85974436 · Mo–So verfügbar</div>
+                </div>
+                <div style={{fontSize:"20px",opacity:0.3,flexShrink:0}}>↗</div>
+              </a>
+
             </div>
 
             {/* DIVIDER */}
-            <div style={{display:"flex",alignItems:"center",gap:"12px",marginBottom:"22px"}}>
-              <div style={{flex:1,height:"1px",background:"rgba(255,255,255,0.06)"}}/>
-              <span style={{color:"rgba(255,255,255,0.2)",fontSize:"12px"}}>oder Formular</span>
-              <div style={{flex:1,height:"1px",background:"rgba(255,255,255,0.06)"}}/>
+            <div style={{display:"flex",alignItems:"center",gap:"16px",marginBottom:"28px",maxWidth:"480px",margin:"0 auto 28px"}}>
+              <div style={{flex:1,height:"1px",background:"linear-gradient(90deg,transparent,rgba(255,255,255,0.08))"}}/>
+              <span style={{color:"rgba(255,255,255,0.2)",fontSize:"11px",fontWeight:"600",letterSpacing:"2px"}}>KONTAKTDATEN</span>
+              <div style={{flex:1,height:"1px",background:"linear-gradient(90deg,rgba(255,255,255,0.08),transparent)"}}/>
             </div>
 
-            {/* CONTACT FORM */}
-            {formSent ? (
-              <div style={{padding:"28px",background:"rgba(139,92,246,0.08)",border:"1px solid rgba(139,92,246,0.2)",borderRadius:"16px",textAlign:"center"}}>
-                <div style={{fontSize:"40px",marginBottom:"10px"}}>✅</div>
-                <h3 style={{fontWeight:"800",fontSize:"18px",marginBottom:"6px"}}>Nachricht gesendet!</h3>
-                <p style={{color:"rgba(255,255,255,0.4)",fontSize:"14px"}}>Ich melde mich innerhalb von 24h bei dir. 💪</p>
-              </div>
-            ) : (
-              <form
-                onSubmit={async(e)=>{
-                  e.preventDefault();
-                  setFormSending(true);
-                  try {
-                    const res = await fetch("https://formsubmit.co/ajax/ghaith.almadani.makkieh@gmail.com",{
-                      method:"POST",
-                      headers:{"Content-Type":"application/json","Accept":"application/json"},
-                      body:JSON.stringify({
-                        name: formData.name,
-                        email: formData.email,
-                        message: formData.message,
-                        _subject: `WebIT AI Anfrage von ${formData.name}`,
-                        _captcha: "false",
-                      })
-                    });
-                    if(res.ok){ setFormSent(true); }
-                  } catch(err){ setFormSent(true); }
-                  setFormSending(false);
-                }}
-                style={{display:"flex",flexDirection:"column",gap:"12px",textAlign:"left"}}>
-                <input
-                  required
-                  placeholder="Dein Name *"
-                  value={formData.name}
-                  onChange={e=>setFormData(d=>({...d,name:e.target.value}))}
-                  style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",padding:"13px 16px",color:"white",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}
-                  onFocus={e=>e.target.style.borderColor="rgba(139,92,246,0.4)"}
-                  onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.08)"}
-                />
-                <input
-                  required
-                  type="email"
-                  placeholder="Deine E-Mail *"
-                  value={formData.email}
-                  onChange={e=>setFormData(d=>({...d,email:e.target.value}))}
-                  style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",padding:"13px 16px",color:"white",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box",fontFamily:"inherit"}}
-                  onFocus={e=>e.target.style.borderColor="rgba(139,92,246,0.4)"}
-                  onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.08)"}
-                />
-                <textarea
-                  required
-                  placeholder="Was brauchst du? (Branche, Wünsche...) *"
-                  rows={4}
-                  value={formData.message}
-                  onChange={e=>setFormData(d=>({...d,message:e.target.value}))}
-                  style={{background:"rgba(255,255,255,0.04)",border:"1px solid rgba(255,255,255,0.08)",borderRadius:"10px",padding:"13px 16px",color:"white",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box",resize:"none",fontFamily:"inherit"}}
-                  onFocus={e=>e.target.style.borderColor="rgba(139,92,246,0.4)"}
-                  onBlur={e=>e.target.style.borderColor="rgba(255,255,255,0.08)"}
-                />
-                <button
-                  type="submit"
-                  disabled={formSending}
-                  style={{padding:"14px",background:"linear-gradient(135deg,#8b5cf6,#ef4444)",color:"white",fontWeight:"700",fontSize:"15px",borderRadius:"12px",border:"none",cursor:formSending?"not-allowed":"pointer",fontFamily:"inherit",opacity:formSending?0.7:1,transition:"all 0.3s",boxShadow:"0 8px 32px rgba(139,92,246,0.25)"}}>
-                  {formSending ? "Wird gesendet..." : "✉️ Anfrage absenden →"}
-                </button>
-              </form>
-            )}
+            {/* CONTACT INFO ROW */}
+            <div style={{display:"flex",flexDirection:"column",gap:"8px",maxWidth:"480px",margin:"0 auto 32px"}}>
+              {[
+                {icon:"✉️",label:"E-Mail",value:"ghaith.almadani.makkieh@gmail.com",href:"https://mail.google.com/mail/?view=cm&to=ghaith.almadani.makkieh@gmail.com"},
+                {icon:"📱",label:"Telefon",value:"+49 176 85974436",href:"tel:+4917685974436"},
+                {icon:"📍",label:"Standort",value:"Rosenberg, Baden-Württemberg",href:null},
+              ].map((c,i)=>(
+                <div key={i} style={{display:"flex",alignItems:"center",gap:"14px",padding:"12px 16px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.06)",borderRadius:"12px"}}>
+                  <div style={{fontSize:"18px",flexShrink:0,width:"32px",textAlign:"center"}}>{c.icon}</div>
+                  <div style={{fontSize:"10px",color:"rgba(255,255,255,0.3)",fontWeight:"700",letterSpacing:"1.5px",textTransform:"uppercase",flexShrink:0,width:"56px"}}>{c.label}</div>
+                  <div style={{flex:1,height:"1px",background:"rgba(255,255,255,0.05)",flexShrink:0}}/>
+                  {c.href
+                    ? <a href={c.href} target={c.href.startsWith("http")?"_blank":undefined} rel="noopener noreferrer" style={{fontSize:"13px",color:"rgba(255,255,255,0.65)",fontWeight:"600",textDecoration:"none",flexShrink:0}}>{c.value}</a>
+                    : <span style={{fontSize:"13px",color:"rgba(255,255,255,0.65)",fontWeight:"600",flexShrink:0}}>{c.value}</span>
+                  }
+                </div>
+              ))}
+            </div>
+
+            {/* TRUST ROW */}
+            <div style={{display:"flex",justifyContent:"center",gap:isMobile?"12px":"24px",flexWrap:"wrap"}}>
+              {[{icon:"✅",text:"Kostenlose Beratung"},{icon:"⚡",text:"Antwort in 24h"},{icon:"🔒",text:"Kein Risiko"},{icon:"💎",text:"Ab 299€"}].map(t=>(
+                <div key={t.text} style={{display:"flex",alignItems:"center",gap:"5px",fontSize:"12px",color:"rgba(255,255,255,0.25)",fontWeight:"600"}}>
+                  <span>{t.icon}</span><span>{t.text}</span>
+                </div>
+              ))}
+            </div>
+
           </div>
         </div>
       </section>
