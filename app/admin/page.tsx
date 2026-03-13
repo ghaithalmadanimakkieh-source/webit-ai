@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 
 const PASSWORD = "Madani.09630";
+const KEY_STORAGE = "wa_apikey";
+const HARDCODED_KEY = "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";
 
 const TABS = {
   hero: {
@@ -101,6 +103,9 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState("");
   const [pwErr, setPwErr] = useState(false);
+  const [apiKey, setApiKey] = useState("");
+  const [apiKeyInput, setApiKeyInput] = useState("");
+  const [apiKeyErr, setApiKeyErr] = useState("");
   const [tab, setTab] = useState("hero");
   const [vals, setVals] = useState({});
   const [activeField, setActiveField] = useState(null);
@@ -116,6 +121,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (sessionStorage.getItem("wa_adm") === "1") setAuthed(true);
+    setApiKey(HARDCODED_KEY);
   }, []);
 
   useEffect(() => {
@@ -173,14 +179,19 @@ export default function AdminPage() {
     apiMessages.push({ role: "user", content: text });
 
     try {
-      const res = await fetch("/api/claude", {
+      const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: apiMessages, system: contextSystem })
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apiKey,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({ model:"claude-sonnet-4-20250514", max_tokens:2048, system:contextSystem, messages:apiMessages })
       });
       const data = await res.json();
-      if (data.error) throw new Error(data.error);
-      setAiMsgs(m => [...m, { role: "bot", text: data.text }]);
+      if (data.error) throw new Error(data.error.message);
+      setAiMsgs(m => [...m, { role:"bot", text: data.content?.[0]?.text || "" }]);
     } catch (err) {
       setAiMsgs(m => [...m, { role: "bot", text: "❌ Fehler: " + (err.message || "Verbindungsproblem") + "\n\nStelle sicher dass ANTHROPIC_API_KEY in Vercel gesetzt ist." }]);
     }
