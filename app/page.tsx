@@ -65,7 +65,7 @@ const BEFORE_AFTER = [
 function getBotAnswer(msg:string):string {
   const m = msg.toLowerCase();
   if(m.includes("preis")||m.includes("kosten")||m.includes("paket"))
-    return "💰 Unsere Pakete:\n\n🥉 Starter – 299€\nLanding Page, Mobile, 14 Tage Support\n\n🥈 Business – 799€\nBis 6 Seiten, CMS, SEO, 60 Tage Support\n\n🥇 Premium – 1.499€\nUnlimited, Shop, KI-Bot, 12 Monate Support\n\n🤖 KI Add-on – +299€";
+    return "💰 Unsere Pakete:\n\n🥉 Starter – 299€\nLanding Page, Mobile, 1 Woche Support\n\n🥈 Business – 799€\nBis 6 Seiten, CMS, SEO, 14 Tage Support\n\n🥇 Premium – 1.499€\nUnlimited, Shop, KI-Bot, 1 Monat Support\n\n🤖 KI Add-on – +299€";
   if(m.includes("wie lang")||m.includes("dauer"))
     return "⏱ Lieferzeiten:\n\n• Landing Page → 3–5 Tage\n• Business → 7–14 Tage\n• Premium → 14–21 Tage";
   if(m.includes("kontakt")||m.includes("termin"))
@@ -723,9 +723,9 @@ export default function Home() {
         
         <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"repeat(3,1fr)",gap:"24px", alignItems:"center"}}>
           {[
-            {tier:"Starter",price:"299",color:"#8b5cf6",features:["1 Landing Page","Mobile-optimiert","Kontaktformular","Google Maps","14 Tage Support"],popular:false},
-            {tier:"Business",price:"799",color:"#ef4444",features:["Bis 6 Seiten","CMS System","SEO Optimierung","Google Analytics","Blog / News","60 Tage Support"],popular:true},
-            {tier:"Premium",price:"1.499",color:"#a78bfa",features:["Unlimited Seiten","Online Shop","KI-Chatbot","SEO Full-Paket","Performance Audit","12 Monate Support"],popular:false},
+            {tier:"Starter",price:"299",color:"#8b5cf6",features:["1 Landing Page","Mobile-optimiert","Kontaktformular","Google Maps","1 Woche Support"],popular:false},
+            {tier:"Business",price:"799",color:"#ef4444",features:["Bis 6 Seiten","CMS System","SEO Optimierung","Google Analytics","Blog / News","14 Tage Support"],popular:true},
+            {tier:"Premium",price:"1.499",color:"#a78bfa",features:["Unlimited Seiten","Online Shop","KI-Chatbot","SEO Full-Paket","Performance Audit","1 Monat Support"],popular:false},
           ].map(p=>(
             <div key={p.tier}
               style={{background:p.popular?"rgba(255,255,255,0.04)":"rgba(255,255,255,0.01)",border:p.popular?"1px solid rgba(255,255,255,0.15)":"1px solid rgba(255,255,255,0.05)",borderRadius:"40px",padding:p.popular?"60px 40px":"48px 40px",position:"relative",transform:!isMobile&&p.popular?"scale(1.05)":"none",boxShadow:p.popular?"0 40px 80px rgba(0,0,0,0.8)":"0 20px 40px rgba(0,0,0,0.4)",backdropFilter:"blur(20px)",transition:"all 0.4s", zIndex:p.popular?10:1}}>
@@ -795,7 +795,11 @@ export default function Home() {
           <span style={{fontWeight:"900",fontSize:"16px",letterSpacing:"-0.5px",color:"#fff"}}>WebIT AI</span>
         </a>
         <div style={{display:"flex",gap:"32px"}}>
-          {[{label:"Impressum",href:"/impressum"},{label:"Datenschutz",href:"/datenschutz"}].map(l=>(
+          {[
+            {label:"Impressum",href:"/impressum"},
+            {label:"Datenschutz",href:"/datenschutz"},
+            {label:"📄 AGB",href:"/agb"}
+          ].map(l=>(
             <a key={l.label} href={l.href} style={{color:"rgba(255,255,255,0.3)",fontWeight:"600",textDecoration:"none",fontSize:"12px",letterSpacing:"1px",textTransform:"uppercase",transition:"color 0.2s"}}
             onMouseEnter={e=>e.currentTarget.style.color="white"}
             onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.3)"}>{l.label}</a>
