@@ -4,96 +4,108 @@ import React from 'react';
 
 export default function KraftwerkDemo() {
   return (
-    <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-black text-white overflow-x-hidden min-h-screen">
-      {/* HERO SECTION */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-red-500/10 to-slate-900/80"></div>
-        
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-black uppercase tracking-tight mb-6 bg-gradient-to-r from-orange-400 via-red-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-2xl">
-            Kraftwerk 1986
-          </h1>
-          <p className="text-xl md:text-2xl lg:text-3xl font-light mb-12 max-w-2xl mx-auto leading-relaxed">
-            Fitnessstudio <span className="font-bold text-orange-400">Bad Mergentheim</span><br />
-            <span className="text-2xl md:text-3xl">Kraft. Power. Ergebnisse.</span>
-          </p>
-          
-          <a href="#probetraining" className="group inline-flex items-center gap-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-xl font-bold px-12 py-6 rounded-full shadow-2xl hover:shadow-orange-500/50 transform hover:-translate-y-2 transition-all duration-300 uppercase tracking-wide">
-            Kostenloses Probetraining
-            <span className="w-4 h-4 border-2 border-white rounded-full border-r-0 border-t-0 animate-spin ml-2"></span>
-          </a>
-          
-          <p className="mt-8 text-lg text-slate-300">
-            <span className="font-bold text-yellow-400 text-2xl">4.7 Sterne</span> ⭐⭐⭐⭐⭐ (62 Bewertungen)
-          </p>
-        </div>
+    <div className="bg-[#0a0a0c] text-white selection:bg-orange-500 selection:text-white min-h-screen font-sans">
+      
+      {/* GLOW DECORATION */}
+      <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-orange-600/10 blur-[120px] rounded-full"></div>
+        <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-red-600/10 blur-[100px] rounded-full"></div>
+      </div>
 
-        <div className="absolute top-20 left-10 w-24 h-24 md:w-32 md:h-32 bg-orange-400/20 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute bottom-20 right-10 w-32 h-32 md:w-40 md:h-40 bg-red-400/20 rounded-full blur-xl animate-pulse"></div>
+      {/* HERO SECTION */}
+      <section className="relative min-h-[90vh] flex items-center justify-center px-6 overflow-hidden">
+        <div className="relative z-10 text-center max-w-5xl">
+          <div className="inline-block px-4 py-1.5 mb-6 border border-orange-500/30 rounded-full bg-orange-500/5 backdrop-blur-md">
+            <span className="text-orange-400 text-sm font-bold tracking-widest uppercase">Bad Mergentheim's Premium Gym</span>
+          </div>
+          
+          <h1 className="text-6xl md:text-8xl lg:text-9xl font-black uppercase tracking-tighter mb-8 leading-[0.9]">
+            KRAFT<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-red-500 to-yellow-500">WERK 1986</span>
+          </h1>
+          
+          <p className="text-lg md:text-2xl text-slate-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed">
+            Keine Ausreden mehr. Erreiche deine Bestform im intensivsten Gym der Region. 
+            <span className="text-white font-medium"> Kraft. Fokus. Ergebnisse.</span>
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-5 justify-center items-center">
+            <a href="#probetraining" className="w-full sm:w-auto px-10 py-5 bg-orange-600 hover:bg-orange-500 text-white font-black rounded-xl transition-all duration-300 transform hover:-translate-y-1 shadow-[0_20px_50px_rgba(234,88,12,0.3)] uppercase tracking-wider">
+              Jetzt Starten
+            </a>
+            <a href="tel:079317285" className="w-full sm:w-auto px-10 py-5 bg-white/5 hover:bg-white/10 border border-white/10 backdrop-blur-md text-white font-black rounded-xl transition-all duration-300 uppercase tracking-wider">
+              Anrufen
+            </a>
+          </div>
+
+          <div className="mt-16 flex flex-wrap justify-center gap-8 opacity-60">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold">4.7</span>
+              <div className="text-orange-500 italic text-sm">⭐⭐⭐⭐⭐ Google</div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold">24/7</span>
+              <div className="text-orange-500 italic text-sm">Zutritt</div>
+            </div>
+          </div>
+        </div>
       </section>
 
-      {/* ÜBER UNS */}
-      <section className="py-32 bg-slate-900/50">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <h2 className="text-4xl md:text-5xl font-black mb-8 uppercase tracking-tight">
-                Dein <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">Kraftwerk</span><br />
-                in Bad Mergentheim
-              </h2>
-              <p className="text-xl leading-relaxed mb-8 text-slate-300">
-                Willkommen im Kraftwerk 1986 – modernes Fitnessstudio mit 4.7 Sternen Bewertungen. Saubere Geräte, starke Kurse, freundliches Team.
-              </p>
-              <ul className="space-y-4 text-lg text-slate-300">
-                <li>• <span className="font-bold text-yellow-400">4.7 Sterne</span> aus 62 echten Bewertungen</li>
-                <li>• Neue Geräte & saubere Räume</li>
-                <li>• Zentrale Lage: Dainbacher Weg 20</li>
-                <li>• Tolle Kursangebote für alle Levels</li>
-              </ul>
+      {/* FEATURES SECTION */}
+      <section className="relative z-10 py-32 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            {/* CARD 1 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-500/50 transition-all duration-500 hover:bg-white/[0.05]">
+              <div className="w-14 h-14 bg-orange-600/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">💪</div>
+              <h3 className="text-2xl font-bold mb-4">Profi-Equipment</h3>
+              <p className="text-slate-400 leading-relaxed">Modernste Maschinen und ein massiver Freihantelbereich für maximalen Reiz.</p>
             </div>
-            <div className="bg-gradient-to-br from-orange-500/10 to-red-500/10 rounded-3xl p-12 border border-orange-500/30 backdrop-blur-xl">
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="text-center p-6 bg-slate-800/50 rounded-2xl">
-                  <div className="text-3xl mb-2">💪</div>
-                  <h3 className="font-bold text-xl mb-2">Krafttraining</h3>
-                  <p className="text-orange-400 font-bold text-2xl">24/7 Zugang</p>
-                </div>
-                <div className="text-center p-6 bg-slate-800/50 rounded-2xl">
-                  <div className="text-3xl mb-2">👥</div>
-                  <h3 className="font-bold text-xl mb-2">Trainer</h3>
-                  <p className="text-orange-400 font-bold text-2xl">Profi-Team</p>
-                </div>
+
+            {/* CARD 2 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-500/50 transition-all duration-500 hover:bg-white/[0.05]">
+              <div className="w-14 h-14 bg-red-600/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">🔥</div>
+              <h3 className="text-2xl font-bold mb-4">Hardcore Kurse</h3>
+              <p className="text-slate-400 leading-relaxed">Von HYROX bis HIIT – wir bringen dich an deine Grenzen und darüber hinaus.</p>
+            </div>
+
+            {/* CARD 3 */}
+            <div className="group p-8 rounded-3xl bg-white/[0.03] border border-white/5 hover:border-orange-500/50 transition-all duration-500 hover:bg-white/[0.05]">
+              <div className="w-14 h-14 bg-yellow-600/20 rounded-2xl flex items-center justify-center text-3xl mb-8 group-hover:scale-110 transition-transform">👑</div>
+              <h3 className="text-2xl font-bold mb-4">Expert Coaching</h3>
+              <p className="text-slate-400 leading-relaxed">Unsere Trainer sind keine Aufseher, sondern Mentoren für deinen Erfolg.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* LOCATION & INFO */}
+      <section className="py-24 px-6 bg-orange-600 text-black">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-12">
+          <div className="text-left">
+            <h2 className="text-4xl md:text-6xl font-black uppercase mb-4 leading-none">Bereit für<br />echte Power?</h2>
+            <p className="text-black/80 text-xl font-medium italic">Besuche uns im Dainbacher Weg 20, Bad Mergentheim.</p>
+          </div>
+          <div className="flex flex-col gap-4 w-full md:w-auto">
+            <div className="bg-black text-white p-8 rounded-2xl shadow-2xl">
+              <p className="text-sm uppercase tracking-widest opacity-60 mb-2">Öffnungszeiten</p>
+              <p className="text-2xl font-bold">24 STUNDEN / 7 TAGE</p>
+              <div className="mt-6 pt-6 border-t border-white/10">
+                <p className="text-sm uppercase tracking-widest opacity-60 mb-2">Support-Hotline</p>
+                <a href="tel:079317285" className="text-3xl font-black hover:text-orange-500 transition-colors">07931 7285</a>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ANGEBOTE */}
-      <section className="py-32">
-        <div className="max-w-6xl mx-auto px-4 text-center">
-          <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tight mb-20">
-            Unsere <span className="bg-gradient-to-r from-orange-400 to-red-400 bg-clip-text text-transparent">Angebote</span>
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-             {["Krafttraining", "Fitnesskurse", "Trainer", "Atmosphäre"].map((item, i) => (
-                <div key={i} className="bg-slate-800/50 border border-slate-700/50 rounded-3xl p-8 hover:border-orange-500/70 transition-all">
-                   <h3 className="text-2xl font-black mb-4">{item}</h3>
-                   <p className="text-slate-400">Top Qualität & modernste Ausstattung.</p>
-                </div>
-             ))}
-          </div>
-        </div>
-      </section>
+      {/* FOOTER */}
+      <footer className="py-12 text-center text-slate-600 text-sm border-t border-white/5">
+        <p>&copy; 2026 Webit-AI Studio Demo - Kraftwerk 1986</p>
+      </footer>
 
-      {/* CTA */}
-      <section id="probetraining" className="py-24 bg-gradient-to-r from-orange-600 via-red-600 to-orange-500 text-center">
-        <h2 className="text-4xl md:text-5xl font-black uppercase mb-6 text-white">Jetzt ins Kraftwerk!</h2>
-        <p className="text-xl text-orange-100 mb-12">Dein erstes Training ist kostenlos.</p>
-        <a href="tel:079317285" className="bg-white text-orange-600 font-bold px-12 py-6 rounded-full text-xl shadow-2xl inline-block">
-          📞 07931 7285
-        </a>
-      </section>
     </div>
   );
 }
