@@ -1,112 +1,125 @@
 "use client";
 
 import React from 'react';
-import { motion } from 'framer-motion';
 
 export default function TheSakaiDemo() {
-  const fadeIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.8 }
-  };
-
   return (
-    <div className="bg-[#0a0a0a] text-[#d4c3a1] min-h-screen font-serif selection:bg-[#d4c3a1] selection:text-black overflow-x-hidden">
+    <div className="bg-[#0a0a0a] text-[#d4c3a1] min-h-screen font-serif selection:bg-[#d4c3a1] selection:text-black">
       
-      {/* NAVBAR ANIMATED */}
-      <motion.nav 
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        className="fixed w-full z-50 px-6 md:px-12 py-6 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-[#d4c3a1]/5"
-      >
-        <div className="text-xl md:text-2xl font-bold tracking-[0.4em] uppercase">The Sakai</div>
-        <a href="tel:06989990330" className="bg-[#d4c3a1] text-black px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all">
+      {/* NAVIGATION - Puristisch & Elegant */}
+      <nav className="fixed w-full z-50 px-8 py-6 flex justify-between items-center bg-black/60 backdrop-blur-md border-b border-[#d4c3a1]/10">
+        <div className="text-2xl font-bold tracking-[0.4em] uppercase text-[#d4c3a1]">The Sakai</div>
+        <div className="hidden md:flex gap-12 text-[10px] uppercase tracking-[0.3em] font-light">
+          <a href="#menu" className="hover:text-white transition">Menü</a>
+          <a href="#omakase" className="hover:text-white transition">Omakase</a>
+          <a href="#kontakt" className="hover:text-white transition">Kontakt</a>
+        </div>
+        <a href="tel:06989990330" className="border border-[#d4c3a1] px-6 py-2 text-[10px] uppercase tracking-widest hover:bg-[#d4c3a1] hover:text-black transition duration-500">
           Reservieren
         </a>
-      </motion.nav>
+      </nav>
 
-      {/* HERO SECTION WITH IMAGE */}
-      <section className="relative h-screen flex items-center justify-center">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-[#0a0a0a] z-10"></div>
-          {/* HIER IST DEIN NEUES BILD */}
+      {/* HERO SECTION - Fokus auf das Produkt */}
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0a0a0a] z-10"></div>
           <img 
-            src="http://googleusercontent.com/image_generation_content/0" 
-            alt="Premium Sushi" 
-            className="w-full h-full object-cover scale-105"
+            src="https://lh3.googleusercontent.com/d/1XvI9oH89uG9XN4y3YV6wFvJ2Y4F5G6H7" 
+            alt="Japanische Kochkunst" 
+            className="w-full h-full object-cover opacity-80"
           />
         </div>
 
-        <motion.div 
-          initial="initial"
-          animate="animate"
-          variants={fadeIn}
-          className="relative z-20 text-center px-4"
-        >
-          <span className="block text-[10px] tracking-[0.8em] uppercase mb-4 opacity-60">Michelin Guide 2023</span>
-          <h1 className="text-7xl md:text-[12rem] font-light leading-none tracking-tighter mb-6">
-            酒井 <span className="italic font-bold text-white">Sakai</span>
+        <div className="relative z-20 text-center space-y-8 px-4">
+          <div className="flex justify-center mb-4">
+            <span className="h-[1px] w-16 bg-[#d4c3a1] self-center opacity-30"></span>
+            <span className="mx-6 text-[10px] tracking-[0.6em] uppercase opacity-70">Frankfurt am Main</span>
+            <span className="h-[1px] w-16 bg-[#d4c3a1] self-center opacity-30"></span>
+          </div>
+          <h1 className="text-7xl md:text-[10rem] font-light tracking-[0.05em] leading-none">
+            酒井 <span className="uppercase font-bold italic text-white">Sakai</span>
           </h1>
-          <p className="text-sm md:text-lg max-w-xl mx-auto font-light tracking-widest uppercase opacity-80">
-            Die Kunst des perfekten Omakase
+          <p className="text-sm md:text-xl max-w-2xl mx-auto font-light leading-relaxed tracking-[0.1em] italic opacity-60">
+            "Inspiration mit Tradition. Qualität mit Ambiente."
           </p>
-        </motion.div>
-        
-        <motion.div 
-          animate={{ y: [0, 10, 0] }}
-          transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 opacity-30"
-        >
-          <div className="w-[1px] h-20 bg-[#d4c3a1]"></div>
-        </motion.div>
+          <div className="pt-12">
+            <a href="#omakase" className="inline-block border border-[#d4c3a1]/40 px-16 py-5 uppercase tracking-[0.4em] text-[11px] hover:bg-[#d4c3a1] hover:text-black transition-all duration-700 font-bold">
+              Entdecken
+            </a>
+          </div>
+        </div>
       </section>
 
-      {/* BILD-GALERIE / GERICHTE */}
-      <section className="py-32 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-32 items-center">
-          <motion.div 
-            whileInView={{ opacity: 1, x: 0 }}
-            initial={{ opacity: 0, x: -50 }}
-            viewport={{ once: true }}
-            className="relative group"
-          >
-            <div className="absolute -inset-4 border border-[#d4c3a1]/20 group-hover:border-[#d4c3a1]/50 transition-all duration-700"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?q=80&w=2070" 
-              className="relative z-10 grayscale hover:grayscale-0 transition-all duration-1000"
-              alt="Japanese Dish"
-            />
-          </motion.div>
+      {/* MICHELIN SECTION */}
+      <section id="omakase" className="py-40 px-6 bg-[#0a0a0a]">
+        <div className="max-w-4xl mx-auto text-center space-y-12">
+          <h2 className="text-[10px] tracking-[0.5em] uppercase opacity-40">Michelin Guide 2023</h2>
+          <p className="text-3xl md:text-5xl leading-[1.5] font-light text-white/90">
+            Erleben Sie unser einzigartiges <span className="italic text-[#d4c3a1]">Sushi-Omakase-Menü</span>. 
+            Meisterhafte Präzision bei jedem Handgriff.
+          </p>
+          <div className="w-20 h-[1px] bg-[#d4c3a1] mx-auto opacity-30"></div>
+        </div>
+      </section>
 
-          <motion.div 
-            whileInView={{ opacity: 1, x: 0 }}
-            initial={{ opacity: 0, x: 50 }}
-            viewport={{ once: true }}
-            className="space-y-8"
-          >
-            <h2 className="text-4xl font-light italic">Inspiration mit Tradition</h2>
-            <p className="text-lg opacity-70 leading-relaxed font-light">
-              Bei uns steht das Produkt im Vordergrund. Wir servieren feinste Qualität nach Omakase-Art – der Koch entscheidet über die Komposition Ihrer Reise durch die Aromen Japans.
-            </p>
-            <div className="grid grid-cols-2 gap-8 pt-8">
+      {/* MENU SECTION */}
+      <section id="menu" className="py-32 px-6 border-t border-white/5">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-24">
+          <div className="space-y-10 group">
+            <h3 className="text-5xl font-light italic text-white group-hover:text-[#d4c3a1] transition-colors">Menü Red</h3>
+            <p className="opacity-60 leading-relaxed font-light text-lg">Signature Menü mit erlesenem Fisch und japanischem Wagyu-Fleisch.</p>
+            <div className="space-y-8 border-l border-[#d4c3a1]/20 pl-8">
               <div>
-                <span className="block text-2xl font-bold">A5</span>
-                <span className="text-[10px] uppercase tracking-widest opacity-50">Wagyu Beef</span>
+                <span className="block text-white uppercase tracking-widest text-sm mb-1">Sashimi Moriawase</span>
+                <span className="text-[10px] opacity-40 uppercase tracking-widest">Die Essenz des Meeres</span>
               </div>
               <div>
-                <span className="block text-2xl font-bold">100%</span>
-                <span className="text-[10px] uppercase tracking-widest opacity-50">Handcrafted</span>
+                <span className="block text-white uppercase tracking-widest text-sm mb-1">Wagyu A5 Nigiri</span>
+                <span className="text-[10px] opacity-40 uppercase tracking-widest">Zartschmelzende Perfektion</span>
               </div>
             </div>
-          </motion.div>
+          </div>
+
+          <div className="space-y-10 group">
+            <h3 className="text-5xl font-light italic text-white group-hover:text-[#d4c3a1] transition-colors">Menü Green</h3>
+            <p className="opacity-60 leading-relaxed font-light text-lg">Pflanzliche Gourmet-Küche. Die Reinheit der japanischen Natur.</p>
+            <div className="space-y-8 border-l border-[#d4c3a1]/20 pl-8">
+              <div>
+                <span className="block text-white uppercase tracking-widest text-sm mb-1">Yasai Sushi Selection</span>
+                <span className="text-[10px] opacity-40 uppercase tracking-widest">Saisonale Kostbarkeiten</span>
+              </div>
+              <div>
+                <span className="block text-white uppercase tracking-widest text-sm mb-1">Matcha Kokos Mochi</span>
+                <span className="text-[10px] opacity-40 uppercase tracking-widest">Hausgemacht & Frisch</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTACT */}
+      <section id="kontakt" className="py-32 px-6 bg-black">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-16 text-center border-t border-[#d4c3a1]/10 pt-20">
+          <div>
+            <h4 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-6 text-[#d4c3a1]">Location</h4>
+            <p className="opacity-70 font-light leading-relaxed">Hedderichstraße 69<br />60596 Frankfurt</p>
+          </div>
+          <div>
+            <h4 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-6 text-[#d4c3a1]">Öffnungszeiten</h4>
+            <p className="opacity-70 font-light leading-relaxed">Mo. - Sa. 18:00 - 23:00<br />Sonntag Ruhetag</p>
+          </div>
+          <div>
+            <h4 className="text-[10px] uppercase tracking-[0.4em] font-bold mb-6 text-[#d4c3a1]">Kontakt</h4>
+            <p className="opacity-70 font-light leading-relaxed">069 89990330<br />contact@the-sakai.com</p>
+          </div>
         </div>
       </section>
 
       {/* FOOTER */}
-      <footer className="py-20 text-center border-t border-white/5 bg-black">
-        <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Ghaith Almadani × Webit-AI</p>
-        <div className="text-xs italic opacity-60">Hedderichstraße 69, Frankfurt</div>
+      <footer className="py-12 text-center text-[9px] uppercase tracking-[0.5em] opacity-20">
+        &copy; 2026 Webit-AI // Ghaith Almadani // Frankfurt Edition
       </footer>
+
     </div>
   );
 }
