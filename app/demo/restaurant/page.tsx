@@ -1,131 +1,112 @@
-// @ts-nocheck
 "use client";
-import { useState } from "react";
 
-const MENU={
-  "Antipasti":[{name:"Bruschetta al Pomodoro",desc:"Röstbrot, Tomaten, Basilikum",price:"8.50",veg:true},{name:"Burrata Pugliese",desc:"Cremige Burrata, Rucola, Kirschtomaten",price:"13.90",veg:true},{name:"Carpaccio di Manzo",desc:"Rindfleisch, Parmesan, Kapern",price:"16.50",veg:false}],
-  "Pasta":[{name:"Spaghetti Carbonara",desc:"Original röm. Art, Guanciale, Pecorino",price:"17.90",veg:false},{name:"Tagliatelle al Ragù",desc:"Hausgemachte Pasta, langsam geschmortes Ragù",price:"18.50",veg:false},{name:"Penne all'Arrabbiata",desc:"Würzige Tomatensauce, Knoblauch, Chili",price:"14.90",veg:true}],
-  "Secondi":[{name:"Branzino al Forno",desc:"Wolfsbarsch, Zitronenbutter, Kräuter",price:"28.90",veg:false},{name:"Bistecca Fiorentina",desc:"T-Bone 400g, Rosmarin, Meersalz",price:"42.00",veg:false},{name:"Pollo alla Griglia",desc:"Gegrilltes Huhn, mediterrane Kräuter",price:"22.50",veg:false}],
-  "Dessert":[{name:"Tiramisù",desc:"Mascarpone, Ladyfinger, Espresso",price:"8.90",veg:true},{name:"Panna Cotta",desc:"Erdbeercoulis, frische Beeren",price:"7.90",veg:true},{name:"Cannoli Siciliani",desc:"Ricotta, Pistazien, Orangenschale",price:"8.50",veg:true}],
-};
+import React from 'react';
+import { motion } from 'framer-motion';
 
-export default function RestaurantDemo() {
-  const [cat, setCat] = useState("Antipasti");
-  const [sent, setSent] = useState(false);
+export default function TheSakaiDemo() {
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8 }
+  };
+
   return (
-    <main className="rist-main">
-      <style>{`
-        .rist-main{min-height:100vh;background:#0a0800;color:#f5f0e8;font-family:'Georgia',serif;overflow-x:hidden}
-        .rist-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 56px;background:rgba(10,8,0,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(212,175,55,0.12)}
-        .rist-nav-links{display:flex;gap:24px;font-family:'Segoe UI',sans-serif}
-        .rist-hero{padding:90px 56px;position:relative;overflow:hidden}
-        .rist-h1{font-size:clamp(40px,6vw,72px);font-weight:400;line-height:1.1;letter-spacing:-1px;margin-bottom:18px}
-        .rist-cta{display:flex;gap:12px;font-family:'Segoe UI',sans-serif;flex-wrap:wrap}
-        .rist-stats{display:flex;gap:32px;margin-top:32px;font-family:'Segoe UI',sans-serif;flex-wrap:wrap}
-        .rist-cats{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;font-family:'Segoe UI',sans-serif}
-        .rist-menu-row{display:flex;justify-content:space-between;align-items:center;padding:20px 28px;background:#0a0800;gap:12px}
-        .rist-form{display:flex;flex-direction:column;gap:12px;font-family:'Segoe UI',sans-serif}
-        .rist-section{padding:50px 56px;max-width:920px;margin:0 auto}
-        .rist-contact{padding:50px 56px;max-width:480px;margin:0 auto}
-        .rist-footer{border-top:1px solid rgba(212,175,55,0.08);padding:18px 56px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-family:'Segoe UI',sans-serif}
-        @media(max-width:768px){
-          .rist-nav{padding:12px 16px}
-          .rist-nav-links{display:none}
-          .rist-hero{padding:52px 16px}
-          .rist-h1{font-size:clamp(30px,9vw,44px);letter-spacing:-0.5px}
-          .rist-cta{flex-direction:column}
-          .rist-stats{gap:18px}
-          .rist-menu-row{padding:14px 14px}
-          .rist-section{padding:40px 16px}
-          .rist-contact{padding:40px 16px}
-          .rist-footer{padding:16px}
-        }
-      `}</style>
+    <div className="bg-[#0a0a0a] text-[#d4c3a1] min-h-screen font-serif selection:bg-[#d4c3a1] selection:text-black overflow-x-hidden">
+      
+      {/* NAVBAR ANIMATED */}
+      <motion.nav 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        className="fixed w-full z-50 px-6 md:px-12 py-6 flex justify-between items-center bg-black/40 backdrop-blur-xl border-b border-[#d4c3a1]/5"
+      >
+        <div className="text-xl md:text-2xl font-bold tracking-[0.4em] uppercase">The Sakai</div>
+        <a href="tel:06989990330" className="bg-[#d4c3a1] text-black px-6 py-2 text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all">
+          Reservieren
+        </a>
+      </motion.nav>
 
-      <div style={{background:"linear-gradient(90deg,#d4af37,#b8941f)",padding:"9px",textAlign:"center",fontSize:"12px",fontWeight:"700",fontFamily:"'Segoe UI',sans-serif",color:"#0a0800"}}>
-        🎨 DEMO — <a href="https://webit-ai.de" style={{color:"#0a0800",fontWeight:"800"}}>WebIT AI</a>
-      </div>
-
-      <nav className="rist-nav">
-        <div>
-          <div style={{fontWeight:"700",fontSize:"18px",letterSpacing:"2px",color:"#d4af37",fontFamily:"'Segoe UI',sans-serif"}}>LA BELLA</div>
-          <div style={{fontSize:"9px",letterSpacing:"3px",color:"rgba(212,175,55,0.35)",fontFamily:"'Segoe UI',sans-serif"}}>RISTORANTE ITALIANO</div>
+      {/* HERO SECTION WITH IMAGE */}
+      <section className="relative h-screen flex items-center justify-center">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/20 to-[#0a0a0a] z-10"></div>
+          {/* HIER IST DEIN NEUES BILD */}
+          <img 
+            src="http://googleusercontent.com/image_generation_content/0" 
+            alt="Premium Sushi" 
+            className="w-full h-full object-cover scale-105"
+          />
         </div>
-        <div className="rist-nav-links">
-          {["Menü","Weine","Reservierung","Über uns"].map(n=><a key={n} href="#" style={{color:"rgba(245,240,232,0.4)",textDecoration:"none",fontSize:"13px"}}>{n}</a>)}
-        </div>
-        <a href="#reservierung" style={{padding:"8px 14px",border:"1px solid #d4af37",color:"#d4af37",fontSize:"12px",letterSpacing:"1px",textDecoration:"none",fontFamily:"'Segoe UI',sans-serif",fontWeight:"600"}}>RESERVIEREN</a>
-      </nav>
 
-      {/* HERO */}
-      <section className="rist-hero">
-        <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at 60% 50%,rgba(212,175,55,0.06),transparent 60%)",pointerEvents:"none"}}/>
-        <div style={{maxWidth:"600px",position:"relative",zIndex:1}}>
-          <div style={{fontSize:"10px",letterSpacing:"5px",color:"rgba(212,175,55,0.5)",fontFamily:"'Segoe UI',sans-serif",marginBottom:"14px",textTransform:"uppercase"}}>Dal 1985 · Milano</div>
-          <h1 className="rist-h1">La cucina<br/><em style={{color:"#d4af37"}}>dell'anima.</em></h1>
-          <p style={{color:"rgba(245,240,232,0.45)",fontSize:"15px",lineHeight:"1.9",maxWidth:"460px",marginBottom:"28px",fontFamily:"'Segoe UI',sans-serif"}}>
-            Authentische italienische Küche — hausgemachte Pasta, frischeste Zutaten.
+        <motion.div 
+          initial="initial"
+          animate="animate"
+          variants={fadeIn}
+          className="relative z-20 text-center px-4"
+        >
+          <span className="block text-[10px] tracking-[0.8em] uppercase mb-4 opacity-60">Michelin Guide 2023</span>
+          <h1 className="text-7xl md:text-[12rem] font-light leading-none tracking-tighter mb-6">
+            酒井 <span className="italic font-bold text-white">Sakai</span>
+          </h1>
+          <p className="text-sm md:text-lg max-w-xl mx-auto font-light tracking-widest uppercase opacity-80">
+            Die Kunst des perfekten Omakase
           </p>
-          <div className="rist-cta">
-            <a href="#reservierung" style={{padding:"13px 28px",background:"#d4af37",color:"#0a0800",fontWeight:"700",fontSize:"13px",textDecoration:"none",letterSpacing:"1px"}}>TISCH RESERVIEREN</a>
-            <a href="#menu" style={{padding:"13px 28px",border:"1px solid rgba(212,175,55,0.3)",color:"rgba(212,175,55,0.7)",fontSize:"13px",textDecoration:"none",letterSpacing:"1px"}}>MENÜ ANSEHEN</a>
-          </div>
-          <div className="rist-stats">
-            {[{n:"38+",l:"Jahre"},{n:"4.9★",l:"Google"},{n:"120",l:"Sitzplätze"},{n:"Di–So",l:"Geöffnet"}].map((s,i)=>(
-              <div key={i}><div style={{fontSize:"20px",fontWeight:"700",color:"#d4af37"}}>{s.n}</div><div style={{fontSize:"10px",color:"rgba(245,240,232,0.3)",marginTop:"2px"}}>{s.l}</div></div>
-            ))}
-          </div>
-        </div>
+        </motion.div>
+        
+        <motion.div 
+          animate={{ y: [0, 10, 0] }}
+          transition={{ repeat: Infinity, duration: 2 }}
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 opacity-30"
+        >
+          <div className="w-[1px] h-20 bg-[#d4c3a1]"></div>
+        </motion.div>
       </section>
 
-      {/* MENU */}
-      <section id="menu" className="rist-section">
-        <div style={{fontSize:"10px",letterSpacing:"4px",color:"rgba(212,175,55,0.4)",fontFamily:"'Segoe UI',sans-serif",marginBottom:"10px",textAlign:"center",textTransform:"uppercase"}}>La Nostra Cucina</div>
-        <h2 style={{fontSize:"clamp(24px,4vw,38px)",fontWeight:"400",marginBottom:"24px",textAlign:"center"}}>Il Menù</h2>
-        <div className="rist-cats">
-          {Object.keys(MENU).map(c=><button key={c} onClick={()=>setCat(c)} style={{padding:"7px 18px",background:cat===c?"#d4af37":"transparent",border:`1px solid ${cat===c?"#d4af37":"rgba(212,175,55,0.2)"}`,color:cat===c?"#0a0800":"rgba(212,175,55,0.6)",fontSize:"12px",letterSpacing:"1px",cursor:"pointer",fontFamily:"inherit"}}>{c.toUpperCase()}</button>)}
-        </div>
-        <div style={{display:"flex",flexDirection:"column",gap:"1px",background:"rgba(212,175,55,0.06)"}}>
-          {MENU[cat].map((item,i)=>(
-            <div key={i} className="rist-menu-row"
-            onMouseEnter={e=>e.currentTarget.style.background="#0f0d02"}
-            onMouseLeave={e=>e.currentTarget.style.background="#0a0800"}>
-              <div style={{flex:1}}>
-                <div style={{display:"flex",alignItems:"center",gap:"8px",marginBottom:"4px",flexWrap:"wrap"}}>
-                  <span style={{fontWeight:"700",fontSize:"15px",color:"#f5f0e8"}}>{item.name}</span>
-                  {item.veg&&<span style={{fontSize:"9px",padding:"2px 6px",background:"rgba(16,185,129,0.15)",border:"1px solid rgba(16,185,129,0.3)",color:"#6ee7b7",borderRadius:"100px",fontFamily:"'Segoe UI',sans-serif"}}>VEG</span>}
-                </div>
-                <div style={{fontSize:"12px",color:"rgba(245,240,232,0.35)",fontFamily:"'Segoe UI',sans-serif",lineHeight:"1.5"}}>{item.desc}</div>
+      {/* BILD-GALERIE / GERICHTE */}
+      <section className="py-32 px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-32 items-center">
+          <motion.div 
+            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: -50 }}
+            viewport={{ once: true }}
+            className="relative group"
+          >
+            <div className="absolute -inset-4 border border-[#d4c3a1]/20 group-hover:border-[#d4c3a1]/50 transition-all duration-700"></div>
+            <img 
+              src="https://images.unsplash.com/photo-1583623025817-d180a2221d0a?q=80&w=2070" 
+              className="relative z-10 grayscale hover:grayscale-0 transition-all duration-1000"
+              alt="Japanese Dish"
+            />
+          </motion.div>
+
+          <motion.div 
+            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, x: 50 }}
+            viewport={{ once: true }}
+            className="space-y-8"
+          >
+            <h2 className="text-4xl font-light italic">Inspiration mit Tradition</h2>
+            <p className="text-lg opacity-70 leading-relaxed font-light">
+              Bei uns steht das Produkt im Vordergrund. Wir servieren feinste Qualität nach Omakase-Art – der Koch entscheidet über die Komposition Ihrer Reise durch die Aromen Japans.
+            </p>
+            <div className="grid grid-cols-2 gap-8 pt-8">
+              <div>
+                <span className="block text-2xl font-bold">A5</span>
+                <span className="text-[10px] uppercase tracking-widest opacity-50">Wagyu Beef</span>
               </div>
-              <div style={{fontWeight:"700",fontSize:"16px",color:"#d4af37",flexShrink:0}}>€{item.price}</div>
+              <div>
+                <span className="block text-2xl font-bold">100%</span>
+                <span className="text-[10px] uppercase tracking-widest opacity-50">Handcrafted</span>
+              </div>
             </div>
-          ))}
+          </motion.div>
         </div>
       </section>
 
-      {/* RESERVIERUNG */}
-      <section id="reservierung" className="rist-contact">
-        <div style={{fontSize:"10px",letterSpacing:"4px",color:"rgba(212,175,55,0.4)",fontFamily:"'Segoe UI',sans-serif",marginBottom:"10px",textTransform:"uppercase"}}>Reservierung</div>
-        <h2 style={{fontSize:"clamp(22px,4vw,30px)",fontWeight:"400",marginBottom:"22px"}}>Ihren Tisch reservieren</h2>
-        {sent?(
-          <div style={{padding:"28px",border:"1px solid rgba(212,175,55,0.2)",textAlign:"center",fontFamily:"'Segoe UI',sans-serif"}}>
-            <div style={{fontSize:"28px",marginBottom:"10px"}}>🍷</div>
-            <p style={{color:"#d4af37",fontWeight:"600"}}>Vielen Dank! Wir bestätigen binnen 2h.</p>
-          </div>
-        ):(
-          <div className="rist-form">
-            {["Ihr Name","Telefon oder E-Mail","Anzahl Personen","Datum & Uhrzeit"].map((ph,i)=>(
-              <input key={i} placeholder={ph} style={{background:"transparent",border:"none",borderBottom:"1px solid rgba(212,175,55,0.2)",padding:"11px 0",color:"#f5f0e8",fontSize:"14px",outline:"none",width:"100%",boxSizing:"border-box"}}/>
-            ))}
-            <button onClick={()=>setSent(true)} style={{padding:"13px",background:"#d4af37",color:"#0a0800",fontWeight:"700",fontSize:"12px",letterSpacing:"1px",border:"none",cursor:"pointer",marginTop:"6px"}}>RESERVIERUNG SENDEN →</button>
-          </div>
-        )}
-      </section>
-
-      <footer className="rist-footer">
-        <span style={{color:"#d4af37",fontWeight:"700",letterSpacing:"2px",fontSize:"13px"}}>LA BELLA</span>
-        <span style={{color:"rgba(245,240,232,0.2)",fontSize:"12px"}}>Demo von <a href="https://webit-ai.de" style={{color:"#d4af37"}}>WebIT AI</a></span>
+      {/* FOOTER */}
+      <footer className="py-20 text-center border-t border-white/5 bg-black">
+        <p className="text-[10px] tracking-[0.4em] uppercase opacity-40 mb-4">Ghaith Almadani × Webit-AI</p>
+        <div className="text-xs italic opacity-60">Hedderichstraße 69, Frankfurt</div>
       </footer>
-    </main>
+    </div>
   );
 }
