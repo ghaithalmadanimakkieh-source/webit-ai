@@ -1,140 +1,186 @@
 "use client";
 
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
-// --- TYPEN DEFINITION ---
-interface FloatingFoodProps {
-  emoji: string;
-  label: string;
-  side: 'left' | 'right';
+// --- INTERFACES FÜR TYPESCRIPT ---
+interface FloatingDishProps {
+  children: React.ReactNode;
+  delay?: number;
 }
 
-// --- SCHWEBENDE ANIME-FOOD-KOMPONENTE ---
-const FloatingFood: React.FC<FloatingFoodProps> = ({ emoji, label, side }) => (
+interface Message {
+  role: 'bot' | 'user';
+  text: string;
+}
+
+// --- HILFSKOMPONENTE (Typensicher) ---
+const FloatingDish: React.FC<FloatingDishProps> = ({ children, delay = 0 }) => (
   <motion.div
-    initial={{ x: side === 'left' ? -200 : 200, opacity: 0, rotate: side === 'left' ? -20 : 20 }}
-    whileInView={{ x: 0, opacity: 1, rotate: 0 }}
-    viewport={{ once: false, amount: 0.3 }}
-    transition={{ type: "spring", stiffness: 50, damping: 15 }}
-    className={`flex items-center gap-6 p-8 bg-white/10 backdrop-blur-xl rounded-[3rem] border-4 ${side === 'left' ? 'border-[#ff0055]' : 'border-[#00f2ff]'} shadow-2xl hover:scale-110 transition-transform cursor-pointer relative z-10`}
+    initial={{ opacity: 0, x: -100, rotate: -20 }}
+    whileInView={{ opacity: 1, x: 0, rotate: 0 }}
+    viewport={{ once: true, amount: 0.5 }}
+    transition={{ type: "spring", stiffness: 50, delay: delay }}
+    className="relative"
   >
-    <span className="text-8xl drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]">{emoji}</span>
-    <div className="text-left">
-      <h3 className="text-4xl font-black italic uppercase text-white leading-none">{label}</h3>
-      <p className="text-xs font-bold uppercase tracking-widest opacity-70">Super Oishi!</p>
-    </div>
+    {children}
   </motion.div>
 );
 
-export default function SakaiAnimeWorld() {
-  const [messages, setMessages] = useState<{ text: string; bot: boolean }[]>([
-    { text: "KONICHIWA! HUNGER AUF ACTION? 👺", bot: true }
-  ]);
-  const [input, setInput] = useState("");
+const SAMURAI_IMAGE = "https://images.unsplash.com/photo-1599408162485-6d06e6ca189b?q=80&w=1974"; // Stabilerer Link
 
-  const send = () => {
-    if (!input.trim()) return;
-    const newMsgs = [...messages, { text: input, bot: false }];
-    setMessages(newMsgs);
-    setInput("");
+export default function JapanScrollExperience() {
+  const [chatInput, setChatInput] = useState("");
+  const [chatMessages, setChatMessages] = useState<Message[]>([
+    { role: 'bot', text: 'Konichiwa! Bereit für ein Abenteuer? 🏯' }
+  ]);
+  const [isMounted, setIsMounted] = useState(false);
+
+  // Verhindert Hydration-Fehler bei Next.js
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const { scrollYProgress } = useScroll();
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "30%"]);
+
+  const handleSendMessage = () => {
+    if (chatInput.trim() === "") return;
+    const newMessages: Message[] = [...chatMessages, { role: 'user', text: chatInput }];
+    setChatMessages(newMessages);
+    setChatInput("");
+
     setTimeout(() => {
-      const resp = ["NANI?! ⚡", "OISHI! 🍣", "BUSHIDO POWER! ⚔️", "DATTEBAYO! 🍥"];
-      setMessages([...newMsgs, { text: resp[Math.floor(Math.random() * resp.length)], bot: true }]);
-    }, 600);
+      let botResponse = "Nani? 🧐";
+      const input = chatInput.toLowerCase();
+      if (input.includes("hallo") || input.includes("hi")) botResponse = "Yaaay! Ein neuer Freund! 🎉";
+      else if (input.includes("ramen")) botResponse = "Ramen ist Leben! 🍜 Probier das Omakase!";
+      else if (input.includes("sushi")) botResponse = "Sushi-Zeit! 🍣 Ich liebe Fatty Tuna!";
+      else if (input.includes("danke")) botResponse = "Gern geschehen! Arigato! 🙏";
+      
+      setChatMessages(prev => [...prev, { role: 'bot', text: botResponse }]);
+    }, 1000);
   };
 
+  if (!isMounted) return <div className="bg-[#1a1a2e] min-h-screen" />;
+
   return (
-    <div className="bg-[#0b031a] min-h-screen text-white font-sans overflow-x-hidden">
+    <div className="bg-[#1a1a2e] text-white min-h-screen font-sans selection:bg-[#f62e4a] selection:text-white overflow-x-hidden">
       
-      {/* ANIMIERTER HINTERGRUND (FALLENDE BLÜTEN) */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        {[...Array(15)].map((_, i) => (
-          <motion.div
-            key={i}
-            initial={{ y: -100, x: typeof window !== 'undefined' ? Math.random() * window.innerWidth : 100, opacity: 0 }}
-            animate={{ y: 1200, opacity: [0, 1, 0] }}
-            transition={{ duration: Math.random() * 5 + 5, repeat: Infinity, delay: Math.random() * 5 }}
-            className="text-2xl absolute"
-          >
-            🌸
-          </motion.div>
-        ))}
-      </div>
+      {/* NAVBAR */}
+      <nav className="fixed w-full z-50 px-6 py-4 flex justify-between items-center bg-[#1a1a2e]/80 backdrop-blur-md border-b border-white/10">
+        <div className="text-3xl font-extrabold tracking-tight text-white flex items-center gap-2">
+            <span className="text-4xl">🎎</span>
+            <span className="uppercase tracking-widest text-lg bg-[#f62e4a] px-3 py-1 rounded-full">Kyoto Rush</span>
+        </div>
+        <a href="#booking" className="bg-[#f62e4a] text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest hover:scale-105 transition duration-300">
+          Reservieren!
+        </a>
+      </nav>
 
       {/* HERO SECTION */}
-      <section className="relative h-screen flex flex-col items-center justify-center z-10 p-6">
+      <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <motion.div 
-          animate={{ scale: [1, 1.1, 1], rotate: [0, 5, -5, 0] }}
-          transition={{ duration: 4, repeat: Infinity }}
-          className="text-[12rem] md:text-[18rem] drop-shadow-[0_0_50px_rgba(255,0,85,0.8)] leading-none"
+          style={{ y: backgroundY }}
+          className="absolute inset-0 z-0 bg-[url('https://images.unsplash.com/photo-1542051841857-5f90071e7989?q=80&w=2070')] bg-cover bg-center"
         >
-          🍥
+          <div className="absolute inset-0 bg-[#1a1a2e]/60 z-10"></div>
         </motion.div>
-        <h1 className="text-8xl md:text-[14rem] font-black italic uppercase tracking-tighter leading-none text-center">
-          SAKAI <br /><span className="text-[#ff0055] drop-shadow-[0_0_20px_#ff0055]">RUSH</span>
-        </h1>
-        <div className="mt-8 bg-[#00f2ff] text-black px-10 py-3 font-black text-2xl -rotate-3 shadow-[10px_10px_0_#fff]">
-          LEVEL UP YOUR TASTE!
+
+        <div className="relative z-20 text-center px-4 space-y-4">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="inline-block bg-[#f62e4a] p-4 rounded-full text-6xl mb-4 shadow-xl"
+          >
+            🍥
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-7xl md:text-9xl font-extrabold tracking-tighter text-white uppercase"
+          >
+            The Sakai
+          </motion.h1>
+          <p className="text-xl md:text-3xl max-w-2xl mx-auto font-medium leading-relaxed text-[#d4c3a1]">
+            Kulinarische Anime-Welt! Omakase, Sushi & Spaß! 🍣🍜
+          </p>
         </div>
       </section>
 
-      {/* SCROLL-ACTION SECTION */}
-      <section className="relative z-10 py-40 px-6 max-w-6xl mx-auto space-y-32">
-        <div className="flex justify-start">
-          <FloatingFood emoji="🍜" label="Turbo Ramen" side="left" />
-        </div>
-        <div className="flex justify-end">
-          <FloatingFood emoji="🍣" label="Ninja Sushi" side="right" />
-        </div>
-        <div className="flex justify-start">
-          <FloatingFood emoji="🍡" label="Mochi Boom" side="left" />
+      {/* GERICHTE SECTION */}
+      <section className="py-32 px-6 bg-[#0a0a0a] space-y-24 relative z-10">
+        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-20 items-center">
+            <FloatingDish>
+                <div className="text-center bg-[#1a1a2e] p-8 rounded-3xl border-4 border-[#f62e4a] shadow-2xl">
+                    <span className="text-9xl block mb-4">🍜</span>
+                    <h3 className="text-4xl font-extrabold text-[#f62e4a]">Ramen Rush</h3>
+                    <p className="opacity-80">Heiß, würzig, legendär!</p>
+                </div>
+            </FloatingDish>
+            <div className="text-right">
+                <h2 className="text-5xl md:text-7xl font-extrabold tracking-tighter text-white uppercase italic underline decoration-[#f62e4a]">Epic Taste!</h2>
+            </div>
         </div>
       </section>
 
-      {/* SAMURAI ACTION SECTION */}
-      <section className="relative z-10 py-40 bg-[#ff0055] flex flex-col items-center justify-center overflow-hidden">
-        <motion.div 
-          animate={{ x: [-20, 20, -20] }}
-          transition={{ repeat: Infinity, duration: 0.2 }}
-          className="text-[15rem] md:text-[20rem] select-none"
-        >
-          🥷
-        </motion.div>
-        <h2 className="text-6xl md:text-9xl font-black uppercase italic text-black text-center leading-none">
-          DEFEND THE <br /> FLAVOR!
-        </h2>
+      {/* SAMURAI HIGHLIGHT */}
+      <section className="py-32 bg-[#1a1a2e] text-center px-6 relative overflow-hidden">
+        <div className="max-w-4xl mx-auto relative z-20 space-y-12">
+            <motion.div
+                initial={{ opacity: 0, scale: 0 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                className="relative inline-block"
+            >
+                <div className="h-80 w-80 mx-auto rounded-full border-8 border-[#f62e4a] overflow-hidden shadow-2xl">
+                    <img src={SAMURAI_IMAGE} alt="Samurai" className="w-full h-full object-cover" />
+                </div>
+                <motion.span 
+                    animate={{ rotate: [0, 20, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="absolute bottom-4 right-4 text-6xl bg-black p-2 rounded-full border-4 border-[#f62e4a]"
+                >
+                    ⚔️
+                </motion.span>
+            </motion.div>
+            <h2 className="text-6xl md:text-8xl font-black uppercase italic">Samurai Spirit</h2>
+        </div>
       </section>
 
-      {/* CHATBOT BOX */}
-      <div className="fixed bottom-8 right-8 z-50 w-80">
-        <div className="bg-[#1a1a2e] border-4 border-[#00f2ff] rounded-[3rem] p-6 shadow-[0_0_40px_rgba(0,242,255,0.4)]">
-          <div className="flex items-center gap-4 border-b border-white/10 pb-4 mb-4">
-            <span className="text-5xl animate-bounce">👺</span>
-            <h4 className="font-black uppercase italic text-[#00f2ff]">Sensei-Bot</h4>
-          </div>
-          <div className="h-40 overflow-y-auto mb-4 space-y-2 pr-2">
-            {messages.map((m, i) => (
-              <div key={i} className={`p-2 rounded-2xl font-bold text-sm ${m.bot ? 'bg-white/10 text-[#00f2ff]' : 'bg-[#ff0055] text-white text-right'}`}>
-                {m.text}
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <input 
-              value={input} 
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && send()}
-              className="flex-1 bg-white/5 border-2 border-white/20 rounded-full px-4 py-2 text-xs focus:border-[#00f2ff] outline-none text-white"
-              placeholder="Frag den Meister..."
-            />
-            <button onClick={send} className="bg-[#00f2ff] text-black p-2 rounded-full font-black">⚔️</button>
-          </div>
+      {/* CHATBOT */}
+      <section className="py-20 bg-black px-6 border-t border-white/10 relative z-10">
+        <div className="max-w-xl mx-auto bg-[#1a1a2e] p-6 rounded-[2rem] border-4 border-[#f62e4a] shadow-2xl">
+            <div className="flex items-center gap-4 mb-4 border-b border-white/10 pb-4">
+                <span className="text-5xl animate-bounce">👺</span>
+                <h3 className="text-3xl font-black text-[#f62e4a] uppercase">Sakai Bot</h3>
+            </div>
+            <div className="h-60 overflow-y-auto space-y-4 mb-4 pr-2 custom-scrollbar">
+                {chatMessages.map((msg, index) => (
+                    <div key={index} className={`flex ${msg.role === 'bot' ? 'justify-start' : 'justify-end'}`}>
+                        <div className={`p-4 rounded-2xl max-w-[85%] font-bold ${msg.role === 'bot' ? 'bg-white/10 text-white' : 'bg-[#f62e4a] text-white shadow-lg'}`}>
+                            {msg.text}
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="flex gap-2">
+                <input 
+                    type="text" 
+                    value={chatInput} 
+                    onChange={(e) => setChatInput(e.target.value)} 
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Frag den Meister..." 
+                    className="flex-grow p-4 rounded-full bg-white/5 border-2 border-white/10 text-white focus:border-[#f62e4a] outline-none transition-all"
+                />
+                <button onClick={handleSendMessage} className="bg-[#f62e4a] p-4 rounded-full hover:scale-110 transition shadow-xl">
+                    ⚔️
+                </button>
+            </div>
         </div>
-      </div>
+      </section>
 
-      <footer className="py-20 text-center opacity-30 font-black uppercase tracking-[1em] text-[10px]">
-        Sakai Rush // 2026 // Webit-AI
+      <footer className="py-12 text-center text-[10px] font-bold uppercase tracking-[0.8em] opacity-30">
+        Sakai Rush // Anime Edition // 2026
       </footer>
 
     </div>
