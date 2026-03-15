@@ -1,4 +1,3 @@
-// app/AGB/page.tsx
 export default function AGBPage() {
   return (
     <main style={{ padding: "100px 20px", maxWidth: "800px", margin: "0 auto", color: "#fff", background: "#030305", minHeight: "100vh" }}>
@@ -22,13 +21,6 @@ export default function AGBPage() {
         <h2 style={{ color: "#8b5cf6", fontSize: "24px", marginBottom: "16px" }}>3. Urheberrecht</h2>
         <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
           Das Urheberrecht an den erstellten Werken verbleibt bis zur vollständigen Bezahlung beim Entwickler.
-        </p>
-      </section>
-
-      <section style={{ marginBottom: "40px" }}>
-        <h2 style={{ color: "#8b5cf6", fontSize: "24px", marginBottom: "16px" }}>4. Haftung</h2>
-        <p style={{ color: "rgba(255,255,255,0.7)", lineHeight: "1.8" }}>
-          Die Haftung ist auf Vorsatz und grobe Fahrlässigkeit beschränkt.
         </p>
       </section>
     </main>
