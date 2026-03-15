@@ -62,6 +62,15 @@ const BEFORE_AFTER = [
   },
 ];
 
+// ---- Shopify Link und Icon ----
+const SHOPIFY_URL = "https://webit-ai.myshopify.com/products/webit-ai-premium-gastro-paket-inkl-ki-bot";
+const ShopifyIcon = ({size=20}:{size?:number}) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4.68 7.16L3.18 19.38C3.12 19.86 3.48 20.3 3.96 20.36H20.04C20.52 20.3 20.88 19.86 20.82 19.38L19.32 7.16M4.68 7.16C4.68 7.16 5.82 3.5 12 3.5C18.18 3.5 19.32 7.16 19.32 7.16M4.68 7.16H19.32M9 10V11C9 12.66 10.34 14 12 14C13.66 14 15 12.66 15 11V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+// ---------------------------------
+
 function getBotAnswer(msg:string):string {
   const m = msg.toLowerCase();
   if(m.includes("preis")||m.includes("kosten")||m.includes("paket"))
@@ -504,11 +513,48 @@ export default function Home() {
             Wir bauen keine gewöhnlichen Webseiten. Wir erschaffen <strong style={{color:"#fff", fontWeight:"700"}}>digitale Statussymbole</strong> für Marken, die den Markt anführen wollen.
           </h2>
           
+          {/* ══ DREI BUTTONS: Projekt starten (original) | ZU SHOPIFY | Demos ansehen ══ */}
           <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap",marginBottom:"60px"}}>
+            
+            {/* 1. Original "Projekt starten" (leitet zu Kontakt) */}
             <a href="#kontakt" style={{padding:isMobile?"18px 36px":"22px 48px",borderRadius:"20px",background:"#fff",color:"#000",fontWeight:"900",fontSize:isMobile?"13px":"15px",letterSpacing:"2px",textTransform:"uppercase",textDecoration:"none",boxShadow:"0 20px 40px rgba(255,255,255,0.15)",transition:"all 0.3s"}}
             onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-4px) scale(1.02)";e.currentTarget.style.boxShadow="0 30px 60px rgba(255,255,255,0.25)"}}
             onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0) scale(1)";e.currentTarget.style.boxShadow="0 20px 40px rgba(255,255,255,0.15)"}}>Projekt starten</a>
             
+            {/* 2. NEU: Shopify-Button (leitet zu deinem Produkt) */}
+            <a 
+              href={SHOPIFY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                padding: isMobile ? "18px 36px" : "22px 48px",
+                borderRadius: "20px",
+                background: "#96bf48", // Shopify Grün
+                color: "#fff",
+                fontWeight: "900",
+                fontSize: isMobile ? "13px" : "15px",
+                letterSpacing: "2px",
+                textTransform: "uppercase",
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "12px",
+                boxShadow: "0 20px 40px rgba(150,191,72,0.2)",
+                transition: "all 0.3s"
+              }}
+              onMouseEnter={e=>{
+                e.currentTarget.style.transform = "translateY(-4px) scale(1.02)";
+                e.currentTarget.style.boxShadow = "0 30px 60px rgba(150,191,72,0.3)";
+              }}
+              onMouseLeave={e=>{
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow = "0 20px 40px rgba(150,191,72,0.2)";
+              }}
+            >
+              Zu Shopify <ShopifyIcon size={20} />
+            </a>
+            
+            {/* 3. Original "Demos ansehen" */}
             <a href="#demos" style={{padding:isMobile?"18px 36px":"22px 48px",borderRadius:"20px",background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.1)",color:"white",fontWeight:"700",fontSize:isMobile?"13px":"15px",letterSpacing:"2px",textTransform:"uppercase",textDecoration:"none",backdropFilter:"blur(10px)",transition:"all 0.3s"}}
             onMouseEnter={e=>{e.currentTarget.style.background="rgba(255,255,255,0.08)";e.currentTarget.style.borderColor="rgba(255,255,255,0.2)"}}
             onMouseLeave={e=>{e.currentTarget.style.background="rgba(255,255,255,0.03)";e.currentTarget.style.borderColor="rgba(255,255,255,0.1)"}}>Demos ansehen</a>
@@ -525,6 +571,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Rest der Seite (unverändert) */}
       {/* ══ VORHER / NACHHER (Bento Style) ══ */}
       <section style={{padding:pad,maxWidth:"1200px",margin:"0 auto",position:"relative",zIndex:1}}>
         <p style={{color:"#8b5cf6",fontSize:"12px",fontWeight:"800",letterSpacing:"4px",textTransform:"uppercase",marginBottom:"16px",textAlign:"center"}}>Der Unterschied</p>
